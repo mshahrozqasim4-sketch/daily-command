@@ -1,0 +1,22 @@
+{
+  "name": "Shahroz — Daily Command",
+  "short_name": "Daily Command",
+  "description": "Discipline tracker and alarm system for Shahroz",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0a0a0a",
+  "theme_color": "#0a0a0a",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "https://via.placeholder.com/192/c8f135/0a0a0a?text=S",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "https://via.placeholder.com/512/c8f135/0a0a0a?text=S",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

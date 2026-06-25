@@ -1,0 +1,979 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Shahroz — Daily Command</title>
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#0a0a0a" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0a0a0a;
+      --surface: #111111;
+      --border: #1e1e1e;
+      --accent: #c8f135;
+      --accent-dim: rgba(200, 241, 53, 0.12);
+      --accent-mid: rgba(200, 241, 53, 0.25);
+      --text: #f0f0f0;
+      --muted: #555;
+      --danger: #ff4444;
+      --warn: #ffaa00;
+      --success: #c8f135;
+    }
+
+    html, body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Space Grotesk', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* HEADER */
+    header {
+      padding: 24px 20px 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+
+    .brand {
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+
+    .day-badge {
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      color: var(--accent);
+      background: var(--accent-dim);
+      border: 1px solid var(--accent-mid);
+      padding: 4px 10px;
+      border-radius: 2px;
+      letter-spacing: 0.1em;
+    }
+
+    /* HERO */
+    .hero {
+      padding: 32px 20px 24px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .hero-name {
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 6px;
+      letter-spacing: 0.05em;
+    }
+
+    .hero-time {
+      font-family: 'Space Mono', monospace;
+      font-size: clamp(48px, 12vw, 80px);
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1;
+      letter-spacing: -0.02em;
+    }
+
+    .hero-date {
+      font-size: 14px;
+      color: var(--muted);
+      margin-top: 8px;
+    }
+
+    .next-alarm {
+      margin-top: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--accent-dim);
+      border: 1px solid var(--accent-mid);
+      border-radius: 4px;
+      padding: 12px 16px;
+    }
+
+    .next-alarm-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+      flex-shrink: 0;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.8); }
+    }
+
+    .next-alarm-label {
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 2px;
+    }
+
+    .next-alarm-text {
+      font-family: 'Space Mono', monospace;
+      font-size: 13px;
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    /* SECTION */
+    .section {
+      padding: 24px 20px 0;
+    }
+
+    .section-label {
+      font-family: 'Space Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.25em;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+
+    /* ALARM CARDS */
+    .alarm-list {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .alarm-card {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 14px 16px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.15s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .alarm-card:hover {
+      border-color: #333;
+    }
+
+    .alarm-card.active {
+      border-color: var(--accent-mid);
+      background: var(--accent-dim);
+    }
+
+    .alarm-card.fired {
+      opacity: 0.4;
+    }
+
+    .alarm-card.fired .alarm-time {
+      text-decoration: line-through;
+    }
+
+    .alarm-toggle {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      border: 2px solid var(--muted);
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s;
+    }
+
+    .alarm-card.active .alarm-toggle {
+      border-color: var(--accent);
+      background: var(--accent);
+    }
+
+    .alarm-card.active .alarm-toggle::after {
+      content: '';
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--bg);
+    }
+
+    .alarm-info {
+      flex: 1;
+    }
+
+    .alarm-time {
+      font-family: 'Space Mono', monospace;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1;
+    }
+
+    .alarm-card.active .alarm-time {
+      color: var(--accent);
+    }
+
+    .alarm-label {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 3px;
+    }
+
+    .alarm-countdown {
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      color: var(--muted);
+      text-align: right;
+    }
+
+    .alarm-card.active .alarm-countdown {
+      color: var(--accent);
+    }
+
+    /* CHECKLIST */
+    .checklist {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .check-item {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 16px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.15s;
+      user-select: none;
+    }
+
+    .check-item:hover {
+      border-color: #333;
+    }
+
+    .check-item.done {
+      opacity: 0.5;
+    }
+
+    .check-box {
+      width: 20px;
+      height: 20px;
+      border: 2px solid var(--muted);
+      border-radius: 3px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s;
+      font-size: 12px;
+    }
+
+    .check-item.done .check-box {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: var(--bg);
+    }
+
+    .check-text {
+      font-size: 14px;
+      color: var(--text);
+      flex: 1;
+    }
+
+    .check-item.done .check-text {
+      text-decoration: line-through;
+      color: var(--muted);
+    }
+
+    /* STREAK */
+    .streak-bar {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .streak-number {
+      font-family: 'Space Mono', monospace;
+      font-size: 48px;
+      font-weight: 700;
+      color: var(--accent);
+      line-height: 1;
+    }
+
+    .streak-info {
+      flex: 1;
+    }
+
+    .streak-label {
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    .streak-dots {
+      display: flex;
+      gap: 4px;
+      flex-wrap: wrap;
+    }
+
+    .streak-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 2px;
+      background: var(--border);
+    }
+
+    .streak-dot.filled {
+      background: var(--accent);
+    }
+
+    .streak-dot.today {
+      background: var(--accent);
+      box-shadow: 0 0 6px var(--accent);
+    }
+
+    /* PROGRESS */
+    .progress-wrap {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 16px;
+    }
+
+    .progress-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    .progress-title {
+      font-size: 13px;
+      color: var(--text);
+    }
+
+    .progress-pct {
+      font-family: 'Space Mono', monospace;
+      font-size: 13px;
+      color: var(--accent);
+    }
+
+    .progress-track {
+      height: 4px;
+      background: var(--border);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: var(--accent);
+      border-radius: 2px;
+      transition: width 0.4s ease;
+    }
+
+    /* LAUNCH COUNTDOWN */
+    .launch-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 20px;
+    }
+
+    .launch-title {
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 12px;
+      letter-spacing: 0.05em;
+    }
+
+    .launch-days {
+      display: flex;
+      gap: 16px;
+    }
+
+    .launch-unit {
+      text-align: center;
+    }
+
+    .launch-num {
+      font-family: 'Space Mono', monospace;
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--accent);
+      line-height: 1;
+      display: block;
+    }
+
+    .launch-unit-label {
+      font-size: 10px;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-top: 4px;
+    }
+
+    .launch-divider {
+      font-family: 'Space Mono', monospace;
+      font-size: 32px;
+      color: var(--border);
+      line-height: 1;
+      align-self: flex-start;
+    }
+
+    /* NOTIFICATION PERMISSION */
+    .notif-banner {
+      margin: 0 20px;
+      padding: 14px 16px;
+      background: rgba(255, 170, 0, 0.08);
+      border: 1px solid rgba(255, 170, 0, 0.25);
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+    }
+
+    .notif-banner.hidden { display: none; }
+
+    .notif-icon { font-size: 18px; }
+
+    .notif-text {
+      flex: 1;
+      font-size: 13px;
+      color: var(--warn);
+    }
+
+    .notif-btn {
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      color: var(--warn);
+      background: rgba(255, 170, 0, 0.15);
+      border: 1px solid rgba(255, 170, 0, 0.3);
+      padding: 6px 12px;
+      border-radius: 2px;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    /* RESET BUTTON */
+    .reset-btn {
+      display: block;
+      width: calc(100% - 40px);
+      margin: 24px 20px;
+      padding: 14px;
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      color: var(--muted);
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.15s;
+      letter-spacing: 0.05em;
+    }
+
+    .reset-btn:hover {
+      border-color: var(--danger);
+      color: var(--danger);
+    }
+
+    /* TOAST */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: var(--accent);
+      color: var(--bg);
+      font-family: 'Space Mono', monospace;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 10px 20px;
+      border-radius: 2px;
+      transition: transform 0.3s ease;
+      z-index: 999;
+      white-space: nowrap;
+      letter-spacing: 0.05em;
+    }
+
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* SPACER */
+    .spacer { height: 40px; }
+  </style>
+</head>
+<body>
+
+<header>
+  <span class="brand">Shahroz // Daily Command</span>
+  <span class="day-badge" id="dayBadge">DAY —</span>
+</header>
+
+<div class="hero">
+  <div class="hero-name">Good hustle, Shahroz.</div>
+  <div class="hero-time" id="clockDisplay">00:00</div>
+  <div class="hero-date" id="dateDisplay">—</div>
+  <div class="next-alarm" id="nextAlarmBar">
+    <div class="next-alarm-dot"></div>
+    <div>
+      <div class="next-alarm-label">Next alarm</div>
+      <div class="next-alarm-text" id="nextAlarmText">Loading...</div>
+    </div>
+  </div>
+</div>
+
+<div style="height:16px"></div>
+
+<div id="notifBanner" class="notif-banner">
+  <span class="notif-icon">🔔</span>
+  <span class="notif-text">Enable push notifications to get alarms</span>
+  <button class="notif-btn" onclick="requestNotifPermission()">ENABLE</button>
+</div>
+
+<!-- LAUNCH COUNTDOWN -->
+<div class="section">
+  <div class="section-label">Launch Countdown</div>
+  <div class="launch-card">
+    <div class="launch-title">BRAND LAUNCH TARGET — 29 DAYS REMAINING</div>
+    <div class="launch-days">
+      <div class="launch-unit">
+        <span class="launch-num" id="cdDays">29</span>
+        <div class="launch-unit-label">Days</div>
+      </div>
+      <span class="launch-divider">:</span>
+      <div class="launch-unit">
+        <span class="launch-num" id="cdHours">00</span>
+        <div class="launch-unit-label">Hours</div>
+      </div>
+      <span class="launch-divider">:</span>
+      <div class="launch-unit">
+        <span class="launch-num" id="cdMins">00</span>
+        <div class="launch-unit-label">Mins</div>
+      </div>
+      <span class="launch-divider">:</span>
+      <div class="launch-unit">
+        <span class="launch-num" id="cdSecs">00</span>
+        <div class="launch-unit-label">Secs</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ALARMS -->
+<div class="section" style="margin-top:24px">
+  <div class="section-label">Daily Alarms</div>
+  <div class="alarm-list" id="alarmList"></div>
+</div>
+
+<!-- TODAY'S CHECKLIST -->
+<div class="section" style="margin-top:24px">
+  <div class="section-label">Today's Non-Negotiables</div>
+  <div class="checklist" id="checklist"></div>
+  <div style="margin-top:12px">
+    <div class="progress-wrap">
+      <div class="progress-header">
+        <span class="progress-title">Daily completion</span>
+        <span class="progress-pct" id="progressPct">0%</span>
+      </div>
+      <div class="progress-track">
+        <div class="progress-fill" id="progressFill" style="width:0%"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- STREAK -->
+<div class="section" style="margin-top:24px">
+  <div class="section-label">Discipline Streak</div>
+  <div class="streak-bar">
+    <div class="streak-number" id="streakNum">0</div>
+    <div class="streak-info">
+      <div class="streak-label">days consistent</div>
+      <div class="streak-dots" id="streakDots"></div>
+    </div>
+  </div>
+</div>
+
+<button class="reset-btn" onclick="resetDay()">Reset today's checklist</button>
+
+<div class="spacer"></div>
+<div class="toast" id="toast"></div>
+
+<script>
+// ─── CONFIG ───────────────────────────────────────────────────────────────────
+const LAUNCH_DATE = new Date();
+LAUNCH_DATE.setDate(LAUNCH_DATE.getDate() + 29);
+LAUNCH_DATE.setHours(9, 0, 0, 0);
+
+const START_DATE = new Date();
+START_DATE.setDate(START_DATE.getDate() - 61);
+
+const ALARMS = [
+  { id: 'wake',    time: '07:00', label: 'Wake up — eat breakfast, no excuses' },
+  { id: 'work',    time: '07:30', label: 'Deep work begins — phone away' },
+  { id: 'lunch',   time: '12:30', label: 'Lunch + 20 min walk outside' },
+  { id: 'work2',   time: '13:30', label: 'Second work block — admin & coordination' },
+  { id: 'stop',    time: '17:30', label: 'Work ends — step away from the screen' },
+  { id: 'light',   time: '18:30', label: 'Light work — planning & brain dump only' },
+  { id: 'noscreen','time': '21:00', label: 'No screens — wind down' },
+  { id: 'sleep',   time: '22:30', label: 'Sleep. Non-negotiable. 2am is dead.' },
+];
+
+const TASKS = [
+  { id: 'breakfast', text: 'Ate a real breakfast' },
+  { id: 'deep',      text: 'Completed deep work block' },
+  { id: 'lunch',     text: 'Ate proper lunch' },
+  { id: 'walk',      text: 'Took a walk today' },
+  { id: 'water',     text: 'Drank enough water' },
+  { id: 'dump',      text: 'Did evening brain dump (notebook)' },
+  { id: 'sleep',     text: 'In bed by 10:30 PM' },
+];
+
+// ─── STATE ────────────────────────────────────────────────────────────────────
+function todayKey() {
+  const d = new Date();
+  return `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
+}
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem('shahroz_state');
+    return raw ? JSON.parse(raw) : {};
+  } catch { return {}; }
+}
+
+function saveState(s) {
+  localStorage.setItem('shahroz_state', JSON.stringify(s));
+}
+
+let state = loadState();
+
+function getTodayTasks() {
+  const key = todayKey();
+  if (!state[key]) state[key] = { tasks: {}, alarmsFired: {} };
+  return state[key];
+}
+
+// ─── CLOCK ────────────────────────────────────────────────────────────────────
+function pad(n) { return String(n).padStart(2, '0'); }
+
+function updateClock() {
+  const now = new Date();
+  document.getElementById('clockDisplay').textContent =
+    `${pad(now.getHours())}:${pad(now.getMinutes())}`;
+  const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  document.getElementById('dateDisplay').textContent =
+    `${days[now.getDay()]}, ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
+
+  // Day counter
+  const diff = Math.floor((now - START_DATE) / 86400000) + 1;
+  document.getElementById('dayBadge').textContent = `DAY ${diff}`;
+}
+
+// ─── COUNTDOWN ────────────────────────────────────────────────────────────────
+function updateCountdown() {
+  const now = new Date();
+  const diff = LAUNCH_DATE - now;
+  if (diff <= 0) {
+    document.getElementById('cdDays').textContent = '00';
+    document.getElementById('cdHours').textContent = '00';
+    document.getElementById('cdMins').textContent = '00';
+    document.getElementById('cdSecs').textContent = '00';
+    return;
+  }
+  const d = Math.floor(diff / 86400000);
+  const h = Math.floor((diff % 86400000) / 3600000);
+  const m = Math.floor((diff % 3600000) / 60000);
+  const s = Math.floor((diff % 60000) / 1000);
+  document.getElementById('cdDays').textContent = pad(d);
+  document.getElementById('cdHours').textContent = pad(h);
+  document.getElementById('cdMins').textContent = pad(m);
+  document.getElementById('cdSecs').textContent = pad(s);
+}
+
+// ─── ALARMS ───────────────────────────────────────────────────────────────────
+function timeToMinutes(t) {
+  const [h, m] = t.split(':').map(Number);
+  return h * 60 + m;
+}
+
+function minutesToDisplay(mins) {
+  const h = Math.floor(mins / 60) % 24;
+  const m = mins % 60;
+  const ampm = h >= 12 ? 'PM' : 'AM';
+  const hh = h % 12 || 12;
+  return `${hh}:${pad(m)} ${ampm}`;
+}
+
+function getNextAlarm() {
+  const now = new Date();
+  const nowMins = now.getHours() * 60 + now.getMinutes();
+  const sorted = [...ALARMS].sort((a, b) => timeToMinutes(a.time) - timeToMinutes(b.time));
+  const next = sorted.find(a => timeToMinutes(a.time) > nowMins);
+  return next || sorted[0];
+}
+
+function getCountdownToAlarm(alarm) {
+  const now = new Date();
+  const nowMins = now.getHours() * 60 + now.getMinutes();
+  const alarmMins = timeToMinutes(alarm.time);
+  let diff = alarmMins - nowMins;
+  if (diff < 0) diff += 1440;
+  const h = Math.floor(diff / 60);
+  const m = diff % 60;
+  if (h === 0) return `in ${m}m`;
+  return `in ${h}h ${m}m`;
+}
+
+function renderAlarms() {
+  const now = new Date();
+  const nowMins = now.getHours() * 60 + now.getMinutes();
+  const next = getNextAlarm();
+  const container = document.getElementById('alarmList');
+  container.innerHTML = '';
+
+  ALARMS.forEach(alarm => {
+    const aMins = timeToMinutes(alarm.time);
+    const isPast = aMins <= nowMins;
+    const isNext = alarm.id === next.id;
+
+    const card = document.createElement('div');
+    card.className = `alarm-card${isNext ? ' active' : ''}${isPast && !isNext ? ' fired' : ''}`;
+
+    const [h, m] = alarm.time.split(':').map(Number);
+    const ampm = h >= 12 ? 'PM' : 'AM';
+    const hh = h % 12 || 12;
+    const displayTime = `${hh}:${pad(m)} ${ampm}`;
+
+    card.innerHTML = `
+      <div class="alarm-toggle"></div>
+      <div class="alarm-info">
+        <div class="alarm-time">${displayTime}</div>
+        <div class="alarm-label">${alarm.label}</div>
+      </div>
+      <div class="alarm-countdown">${isNext ? getCountdownToAlarm(alarm) : isPast ? 'done' : getCountdownToAlarm(alarm)}</div>
+    `;
+    container.appendChild(card);
+  });
+
+  // Update next alarm bar
+  document.getElementById('nextAlarmText').textContent =
+    `${minutesToDisplay(timeToMinutes(next.time))} — ${next.label}`;
+}
+
+// ─── CHECKLIST ────────────────────────────────────────────────────────────────
+function renderChecklist() {
+  const today = getTodayTasks();
+  const container = document.getElementById('checklist');
+  container.innerHTML = '';
+
+  let done = 0;
+  TASKS.forEach(task => {
+    const isDone = !!today.tasks[task.id];
+    if (isDone) done++;
+
+    const item = document.createElement('div');
+    item.className = `check-item${isDone ? ' done' : ''}`;
+    item.innerHTML = `
+      <div class="check-box">${isDone ? '✓' : ''}</div>
+      <div class="check-text">${task.text}</div>
+    `;
+    item.onclick = () => toggleTask(task.id);
+    container.appendChild(item);
+  });
+
+  const pct = Math.round((done / TASKS.length) * 100);
+  document.getElementById('progressPct').textContent = `${pct}%`;
+  document.getElementById('progressFill').style.width = `${pct}%`;
+
+  // Auto-complete streak if all done
+  if (done === TASKS.length) {
+    markStreakDay();
+  }
+}
+
+function toggleTask(id) {
+  const today = getTodayTasks();
+  today.tasks[id] = !today.tasks[id];
+  state[todayKey()] = today;
+  saveState(state);
+  renderChecklist();
+  if (today.tasks[id]) showToast('Done ✓');
+}
+
+// ─── STREAK ───────────────────────────────────────────────────────────────────
+function markStreakDay() {
+  if (!state.streak) state.streak = { days: [], lastDate: null };
+  const today = todayKey();
+  if (state.streak.lastDate !== today) {
+    state.streak.lastDate = today;
+    state.streak.days.push(today);
+    if (state.streak.days.length > 30) state.streak.days.shift();
+    saveState(state);
+  }
+  renderStreak();
+}
+
+function renderStreak() {
+  if (!state.streak) state.streak = { days: [], lastDate: null };
+  const count = state.streak.days.length;
+  document.getElementById('streakNum').textContent = count;
+
+  const dotsEl = document.getElementById('streakDots');
+  dotsEl.innerHTML = '';
+  const today = todayKey();
+
+  for (let i = 0; i < 30; i++) {
+    const dot = document.createElement('div');
+    const dayKey = state.streak.days[i];
+    dot.className = `streak-dot${dayKey ? (dayKey === today ? ' today' : ' filled') : ''}`;
+    dotsEl.appendChild(dot);
+  }
+}
+
+// ─── NOTIFICATIONS ────────────────────────────────────────────────────────────
+function updateNotifBanner() {
+  const banner = document.getElementById('notifBanner');
+  if (!('Notification' in window)) {
+    banner.classList.add('hidden');
+    return;
+  }
+  if (Notification.permission === 'granted') {
+    banner.classList.add('hidden');
+  } else {
+    banner.classList.remove('hidden');
+  }
+}
+
+async function requestNotifPermission() {
+  if (!('Notification' in window)) {
+    showToast('Notifications not supported on this browser');
+    return;
+  }
+  const perm = await Notification.requestPermission();
+  if (perm === 'granted') {
+    updateNotifBanner();
+    showToast('Notifications enabled ✓');
+    scheduleNotifications();
+  } else {
+    showToast('Permission denied — enable in browser settings');
+  }
+}
+
+let scheduledAlarms = {};
+
+function scheduleNotifications() {
+  if (Notification.permission !== 'granted') return;
+
+  // Clear existing
+  Object.values(scheduledAlarms).forEach(clearTimeout);
+  scheduledAlarms = {};
+
+  const now = new Date();
+  ALARMS.forEach(alarm => {
+    const [h, m] = alarm.time.split(':').map(Number);
+    const target = new Date();
+    target.setHours(h, m, 0, 0);
+    if (target <= now) target.setDate(target.getDate() + 1);
+    const delay = target - now;
+
+    scheduledAlarms[alarm.id] = setTimeout(() => {
+      new Notification(`⏰ ${alarm.time} — Shahroz`, {
+        body: alarm.label,
+        icon: 'https://via.placeholder.com/96/c8f135/0a0a0a?text=S',
+        badge: 'https://via.placeholder.com/32/c8f135/0a0a0a?text=S',
+        vibrate: [200, 100, 200],
+        tag: alarm.id,
+        renotify: true,
+      });
+    }, delay);
+  });
+}
+
+// ─── SERVICE WORKER ───────────────────────────────────────────────────────────
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js').then(() => {
+    if (Notification.permission === 'granted') scheduleNotifications();
+  }).catch(console.error);
+}
+
+// ─── TOAST ────────────────────────────────────────────────────────────────────
+let toastTimeout;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimeout);
+  toastTimeout = setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// ─── RESET ────────────────────────────────────────────────────────────────────
+function resetDay() {
+  const key = todayKey();
+  state[key] = { tasks: {}, alarmsFired: {} };
+  saveState(state);
+  renderChecklist();
+  showToast('Today reset');
+}
+
+// ─── ALARM CHECKER (every minute) ────────────────────────────────────────────
+let lastFiredMinute = null;
+function checkAlarms() {
+  const now = new Date();
+  const nowMins = now.getHours() * 60 + now.getMinutes();
+  if (nowMins === lastFiredMinute) return;
+
+  ALARMS.forEach(alarm => {
+    if (timeToMinutes(alarm.time) === nowMins) {
+      lastFiredMinute = nowMins;
+      if (Notification.permission === 'granted') {
+        new Notification(`⏰ ${alarm.time} — Shahroz`, {
+          body: alarm.label,
+          tag: alarm.id,
+          renotify: true,
+        });
+      }
+      showToast(`🔔 ${alarm.time} — ${alarm.label}`);
+    }
+  });
+}
+
+// ─── INIT ─────────────────────────────────────────────────────────────────────
+function init() {
+  updateClock();
+  updateCountdown();
+  renderAlarms();
+  renderChecklist();
+  renderStreak();
+  updateNotifBanner();
+
+  setInterval(() => {
+    updateClock();
+    updateCountdown();
+    renderAlarms();
+    checkAlarms();
+  }, 1000);
+}
+
+init();
+</script>
+</body>
+</html>
