@@ -1,978 +1,523 @@
 <!DOCTYPE html>
-<html lang="en">
+<html class="dark" lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Shahroz — Daily Command</title>
-  <link rel="manifest" href="manifest.json" />
-  <meta name="theme-color" content="#0a0a0a" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    :root {
-      --bg: #0a0a0a;
-      --surface: #111111;
-      --border: #1e1e1e;
-      --accent: #c8f135;
-      --accent-dim: rgba(200, 241, 53, 0.12);
-      --accent-mid: rgba(200, 241, 53, 0.25);
-      --text: #f0f0f0;
-      --muted: #555;
-      --danger: #ff4444;
-      --warn: #ffaa00;
-      --success: #c8f135;
-    }
-
-    html, body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: 'Space Grotesk', sans-serif;
-      min-height: 100vh;
-      overflow-x: hidden;
-    }
-
-    /* HEADER */
-    header {
-      padding: 24px 20px 0;
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-    }
-
-    .brand {
-      font-family: 'Space Mono', monospace;
-      font-size: 11px;
-      letter-spacing: 0.2em;
-      color: var(--muted);
-      text-transform: uppercase;
-    }
-
-    .day-badge {
-      font-family: 'Space Mono', monospace;
-      font-size: 11px;
-      color: var(--accent);
-      background: var(--accent-dim);
-      border: 1px solid var(--accent-mid);
-      padding: 4px 10px;
-      border-radius: 2px;
-      letter-spacing: 0.1em;
-    }
-
-    /* HERO */
-    .hero {
-      padding: 32px 20px 24px;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .hero-name {
-      font-size: 13px;
-      color: var(--muted);
-      margin-bottom: 6px;
-      letter-spacing: 0.05em;
-    }
-
-    .hero-time {
-      font-family: 'Space Mono', monospace;
-      font-size: clamp(48px, 12vw, 80px);
-      font-weight: 700;
-      color: var(--text);
-      line-height: 1;
-      letter-spacing: -0.02em;
-    }
-
-    .hero-date {
-      font-size: 14px;
-      color: var(--muted);
-      margin-top: 8px;
-    }
-
-    .next-alarm {
-      margin-top: 20px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      background: var(--accent-dim);
-      border: 1px solid var(--accent-mid);
-      border-radius: 4px;
-      padding: 12px 16px;
-    }
-
-    .next-alarm-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: var(--accent);
-      flex-shrink: 0;
-      animation: pulse 2s infinite;
-    }
-
-    @keyframes pulse {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.5; transform: scale(0.8); }
-    }
-
-    .next-alarm-label {
-      font-size: 12px;
-      color: var(--muted);
-      margin-bottom: 2px;
-    }
-
-    .next-alarm-text {
-      font-family: 'Space Mono', monospace;
-      font-size: 13px;
-      color: var(--accent);
-      font-weight: 700;
-    }
-
-    /* SECTION */
-    .section {
-      padding: 24px 20px 0;
-    }
-
-    .section-label {
-      font-family: 'Space Mono', monospace;
-      font-size: 10px;
-      letter-spacing: 0.25em;
-      color: var(--muted);
-      text-transform: uppercase;
-      margin-bottom: 14px;
-    }
-
-    /* ALARM CARDS */
-    .alarm-list {
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-    }
-
-    .alarm-card {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      padding: 14px 16px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 4px;
-      cursor: pointer;
-      transition: border-color 0.15s, background 0.15s;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .alarm-card:hover {
-      border-color: #333;
-    }
-
-    .alarm-card.active {
-      border-color: var(--accent-mid);
-      background: var(--accent-dim);
-    }
-
-    .alarm-card.fired {
-      opacity: 0.4;
-    }
-
-    .alarm-card.fired .alarm-time {
-      text-decoration: line-through;
-    }
-
-    .alarm-toggle {
-      width: 18px;
-      height: 18px;
-      border-radius: 50%;
-      border: 2px solid var(--muted);
-      flex-shrink: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.15s;
-    }
-
-    .alarm-card.active .alarm-toggle {
-      border-color: var(--accent);
-      background: var(--accent);
-    }
-
-    .alarm-card.active .alarm-toggle::after {
-      content: '';
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: var(--bg);
-    }
-
-    .alarm-info {
-      flex: 1;
-    }
-
-    .alarm-time {
-      font-family: 'Space Mono', monospace;
-      font-size: 18px;
-      font-weight: 700;
-      color: var(--text);
-      line-height: 1;
-    }
-
-    .alarm-card.active .alarm-time {
-      color: var(--accent);
-    }
-
-    .alarm-label {
-      font-size: 12px;
-      color: var(--muted);
-      margin-top: 3px;
-    }
-
-    .alarm-countdown {
-      font-family: 'Space Mono', monospace;
-      font-size: 11px;
-      color: var(--muted);
-      text-align: right;
-    }
-
-    .alarm-card.active .alarm-countdown {
-      color: var(--accent);
-    }
-
-    /* CHECKLIST */
-    .checklist {
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-    }
-
-    .check-item {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      padding: 14px 16px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 4px;
-      cursor: pointer;
-      transition: all 0.15s;
-      user-select: none;
-    }
-
-    .check-item:hover {
-      border-color: #333;
-    }
-
-    .check-item.done {
-      opacity: 0.5;
-    }
-
-    .check-box {
-      width: 20px;
-      height: 20px;
-      border: 2px solid var(--muted);
-      border-radius: 3px;
-      flex-shrink: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.15s;
-      font-size: 12px;
-    }
-
-    .check-item.done .check-box {
-      background: var(--accent);
-      border-color: var(--accent);
-      color: var(--bg);
-    }
-
-    .check-text {
-      font-size: 14px;
-      color: var(--text);
-      flex: 1;
-    }
-
-    .check-item.done .check-text {
-      text-decoration: line-through;
-      color: var(--muted);
-    }
-
-    /* STREAK */
-    .streak-bar {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 4px;
-      padding: 20px;
-      display: flex;
-      align-items: center;
-      gap: 20px;
-    }
-
-    .streak-number {
-      font-family: 'Space Mono', monospace;
-      font-size: 48px;
-      font-weight: 700;
-      color: var(--accent);
-      line-height: 1;
-    }
-
-    .streak-info {
-      flex: 1;
-    }
-
-    .streak-label {
-      font-size: 13px;
-      color: var(--muted);
-      margin-bottom: 8px;
-    }
-
-    .streak-dots {
-      display: flex;
-      gap: 4px;
-      flex-wrap: wrap;
-    }
-
-    .streak-dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 2px;
-      background: var(--border);
-    }
-
-    .streak-dot.filled {
-      background: var(--accent);
-    }
-
-    .streak-dot.today {
-      background: var(--accent);
-      box-shadow: 0 0 6px var(--accent);
-    }
-
-    /* PROGRESS */
-    .progress-wrap {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 4px;
-      padding: 16px;
-    }
-
-    .progress-header {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 12px;
-    }
-
-    .progress-title {
-      font-size: 13px;
-      color: var(--text);
-    }
-
-    .progress-pct {
-      font-family: 'Space Mono', monospace;
-      font-size: 13px;
-      color: var(--accent);
-    }
-
-    .progress-track {
-      height: 4px;
-      background: var(--border);
-      border-radius: 2px;
-      overflow: hidden;
-    }
-
-    .progress-fill {
-      height: 100%;
-      background: var(--accent);
-      border-radius: 2px;
-      transition: width 0.4s ease;
-    }
-
-    /* LAUNCH COUNTDOWN */
-    .launch-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 4px;
-      padding: 20px;
-    }
-
-    .launch-title {
-      font-size: 12px;
-      color: var(--muted);
-      margin-bottom: 12px;
-      letter-spacing: 0.05em;
-    }
-
-    .launch-days {
-      display: flex;
-      gap: 16px;
-    }
-
-    .launch-unit {
-      text-align: center;
-    }
-
-    .launch-num {
-      font-family: 'Space Mono', monospace;
-      font-size: 32px;
-      font-weight: 700;
-      color: var(--accent);
-      line-height: 1;
-      display: block;
-    }
-
-    .launch-unit-label {
-      font-size: 10px;
-      color: var(--muted);
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      margin-top: 4px;
-    }
-
-    .launch-divider {
-      font-family: 'Space Mono', monospace;
-      font-size: 32px;
-      color: var(--border);
-      line-height: 1;
-      align-self: flex-start;
-    }
-
-    /* NOTIFICATION PERMISSION */
-    .notif-banner {
-      margin: 0 20px;
-      padding: 14px 16px;
-      background: rgba(255, 170, 0, 0.08);
-      border: 1px solid rgba(255, 170, 0, 0.25);
-      border-radius: 4px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      cursor: pointer;
-    }
-
-    .notif-banner.hidden { display: none; }
-
-    .notif-icon { font-size: 18px; }
-
-    .notif-text {
-      flex: 1;
-      font-size: 13px;
-      color: var(--warn);
-    }
-
-    .notif-btn {
-      font-family: 'Space Mono', monospace;
-      font-size: 11px;
-      color: var(--warn);
-      background: rgba(255, 170, 0, 0.15);
-      border: 1px solid rgba(255, 170, 0, 0.3);
-      padding: 6px 12px;
-      border-radius: 2px;
-      cursor: pointer;
-      white-space: nowrap;
-    }
-
-    /* RESET BUTTON */
-    .reset-btn {
-      display: block;
-      width: calc(100% - 40px);
-      margin: 24px 20px;
-      padding: 14px;
-      background: transparent;
-      border: 1px solid var(--border);
-      border-radius: 4px;
-      color: var(--muted);
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 13px;
-      cursor: pointer;
-      transition: all 0.15s;
-      letter-spacing: 0.05em;
-    }
-
-    .reset-btn:hover {
-      border-color: var(--danger);
-      color: var(--danger);
-    }
-
-    /* TOAST */
-    .toast {
-      position: fixed;
-      bottom: 24px;
-      left: 50%;
-      transform: translateX(-50%) translateY(80px);
-      background: var(--accent);
-      color: var(--bg);
-      font-family: 'Space Mono', monospace;
-      font-size: 12px;
-      font-weight: 700;
-      padding: 10px 20px;
-      border-radius: 2px;
-      transition: transform 0.3s ease;
-      z-index: 999;
-      white-space: nowrap;
-      letter-spacing: 0.05em;
-    }
-
-    .toast.show {
-      transform: translateX(-50%) translateY(0);
-    }
-
-    /* SPACER */
-    .spacer { height: 40px; }
-  </style>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
+<title>LAUNCHPAD OS — Shahroz</title>
+<link rel="manifest" href="manifest.json"/>
+<meta name="theme-color" content="#0A0A0A"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&family=Inter:wght@400;600&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+tailwind.config = {
+  darkMode: "class",
+  theme: {
+    extend: {
+      colors: {
+        "surface-bright": "#3a3939","surface-container-lowest": "#0e0e0e",
+        "error-container": "#93000a","secondary-container": "#ffdb3c",
+        "outline-variant": "#3b4b37","background": "#131313",
+        "surface-container-low": "#1c1b1b","on-primary-container": "#007117",
+        "on-background": "#e5e2e1","error": "#ffb4ab","on-secondary": "#3a3000",
+        "on-surface": "#e5e2e1","on-primary": "#003907","outline": "#84967e",
+        "surface-container-highest": "#353534","primary-container": "#00ff41",
+        "on-surface-variant": "#b9ccb2","surface-dim": "#131313","surface": "#131313",
+        "surface-container": "#201f1f","primary-fixed-dim": "#00e639",
+        "surface-container-high": "#2a2a2a","surface-tint": "#00e639",
+        "primary-fixed": "#72ff70","on-error": "#690005",
+      },
+      borderRadius: { DEFAULT:"0.125rem",lg:"0.25rem",xl:"0.5rem",full:"0.75rem" },
+      spacing: {
+        "card-padding":"12px","unit-sm":"8px","unit-md":"12px",
+        "grid-margin":"16px","unit-xs":"4px","unit-lg":"16px"
+      },
+      fontFamily: {
+        "display-mono":["JetBrains Mono"],"headline-sm":["JetBrains Mono"],
+        "label-xs":["JetBrains Mono"],"code-sm":["JetBrains Mono"],"body-md":["JetBrains Mono"]
+      },
+      fontSize: {
+        "display-mono":["24px",{lineHeight:"32px",letterSpacing:"-0.02em",fontWeight:"700"}],
+        "headline-sm":["18px",{lineHeight:"24px",letterSpacing:"-0.01em",fontWeight:"600"}],
+        "label-xs":["10px",{lineHeight:"12px",letterSpacing:"0.05em",fontWeight:"500"}],
+        "code-sm":["12px",{lineHeight:"16px",letterSpacing:"0",fontWeight:"400"}],
+        "body-md":["14px",{lineHeight:"20px",letterSpacing:"0",fontWeight:"400"}]
+      }
+    }
+  }
+}
+</script>
+<style>
+  body { background-color:#0A0A0A; color:#e5e2e1; -webkit-font-smoothing:antialiased; min-height:max(884px,100dvh); }
+  .micro-border { border:1px solid rgba(74,85,104,0.4); }
+  .material-symbols-outlined { font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24; }
+  ::-webkit-scrollbar { width:4px; }
+  ::-webkit-scrollbar-track { background:#0A0A0A; }
+  ::-webkit-scrollbar-thumb { background:#4A5568; border-radius:2px; }
+  ::-webkit-scrollbar-thumb:hover { background:#00ff41; }
+  .streak-dot { width:10px; height:10px; border-radius:1px; }
+  @keyframes custom-pulse { 0%,100%{opacity:1;transform:scale(1);} 50%{opacity:0.7;transform:scale(1.05);} }
+  .animate-pulse-subtle { animation:custom-pulse 2s infinite; }
+  .habit-item { cursor:pointer; user-select:none; transition:opacity 0.2s; }
+  .habit-item.done { opacity:0.4; }
+  .habit-item.done .habit-label { text-decoration:line-through; }
+  .alarm-row-active { background:rgba(0,255,65,0.06); border-left:3px solid #00ff41; }
+  .alarm-row-past { opacity:0.4; }
+  #toast {
+    position:fixed; bottom:80px; left:50%;
+    transform:translateX(-50%) translateY(60px);
+    background:#00ff41; color:#0a0a0a;
+    font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:700;
+    padding:8px 18px; border-radius:2px; transition:transform 0.25s ease;
+    z-index:9999; white-space:nowrap; letter-spacing:0.05em; pointer-events:none;
+  }
+  #toast.show { transform:translateX(-50%) translateY(0); }
+  #notif-banner { background:rgba(255,170,0,0.08); border:1px solid rgba(255,170,0,0.3); color:#ffaa00; }
+  #notif-banner.hidden { display:none; }
+  .tab-btn { transition:all 0.15s; color:#b9ccb2; }
+  .tab-btn.active { color:#00ff41; }
+  .tab-btn:not(.active) { opacity:0.5; }
+  .view { display:none; }
+  .view.active { display:block; }
+</style>
 </head>
-<body>
+<body class="font-body-md text-body-md">
 
-<header>
-  <span class="brand">Shahroz // Daily Command</span>
-  <span class="day-badge" id="dayBadge">DAY —</span>
+<header class="fixed top-0 w-full z-50 bg-background/95 backdrop-blur-md border-b border-outline-variant/40 flex justify-between items-center px-grid-margin h-14">
+  <div class="flex items-center gap-3">
+    <div class="flex items-center gap-1.5">
+      <span class="material-symbols-outlined text-primary-container text-xl">schedule</span>
+      <span class="font-display-mono text-xl text-primary-container uppercase tracking-tighter" id="dayBadge">DAY —</span>
+    </div>
+    <div class="hidden sm:flex h-6 w-px bg-outline-variant/30"></div>
+    <div class="flex flex-col">
+      <div class="flex items-center gap-1">
+        <span class="w-1.5 h-1.5 rounded-full bg-primary-fixed shadow-[0_0_4px_rgba(0,230,57,0.8)] animate-pulse"></span>
+        <span class="font-label-xs text-[9px] uppercase tracking-wider text-primary-fixed">SYS_STATUS: ONLINE</span>
+      </div>
+      <div class="flex gap-3 mt-0.5">
+        <span class="font-label-xs text-[8px] uppercase tracking-tighter opacity-60">SHAHROZ_QASIM</span>
+        <span class="font-label-xs text-[8px] uppercase tracking-tighter opacity-60">LAHORE/PK</span>
+      </div>
+    </div>
+  </div>
+  <button onclick="requestNotifPermission()" class="transition-colors duration-150 hover:bg-surface-container p-2 rounded">
+    <span class="material-symbols-outlined text-on-surface-variant" id="notifIcon">notifications</span>
+  </button>
 </header>
 
-<div class="hero">
-  <div class="hero-name">Good hustle, Shahroz.</div>
-  <div class="hero-time" id="clockDisplay">00:00</div>
-  <div class="hero-date" id="dateDisplay">—</div>
-  <div class="next-alarm" id="nextAlarmBar">
-    <div class="next-alarm-dot"></div>
-    <div>
-      <div class="next-alarm-label">Next alarm</div>
-      <div class="next-alarm-text" id="nextAlarmText">Loading...</div>
-    </div>
+<main class="pt-20 pb-24 px-grid-margin space-y-4">
+
+  <div id="notif-banner" class="px-3 py-2 flex items-center gap-3 micro-border cursor-pointer" onclick="requestNotifPermission()">
+    <span class="material-symbols-outlined text-base">notifications_off</span>
+    <span class="font-label-xs text-[10px] uppercase tracking-wider flex-1">Enable push notifications for alarms</span>
+    <span class="font-label-xs text-[10px] uppercase tracking-wider border border-current px-2 py-0.5">ENABLE</span>
   </div>
-</div>
 
-<div style="height:16px"></div>
+  <section class="flex flex-col items-center justify-center py-2">
+    <h1 class="font-display-mono text-[72px] leading-none text-primary-container font-bold tracking-tighter drop-shadow-[0_0_15px_rgba(0,255,65,0.2)]" id="live-clock">00:00</h1>
+    <p class="font-label-xs text-label-xs text-on-surface-variant uppercase tracking-[0.2em] mt-2" id="live-date">— // PKT</p>
+  </section>
 
-<div id="notifBanner" class="notif-banner">
-  <span class="notif-icon">🔔</span>
-  <span class="notif-text">Enable push notifications to get alarms</span>
-  <button class="notif-btn" onclick="requestNotifPermission()">ENABLE</button>
-</div>
+  <div class="px-3 py-1 text-center font-label-xs text-[10px] font-bold uppercase tracking-widest border" id="healthStrip">
+    SYSTEM_HEALTH: CHECKING...
+  </div>
 
-<!-- LAUNCH COUNTDOWN -->
-<div class="section">
-  <div class="section-label">Launch Countdown</div>
-  <div class="launch-card">
-    <div class="launch-title">BRAND LAUNCH TARGET — 29 DAYS REMAINING</div>
-    <div class="launch-days">
-      <div class="launch-unit">
-        <span class="launch-num" id="cdDays">29</span>
-        <div class="launch-unit-label">Days</div>
+  <section class="micro-border bg-surface-container-lowest overflow-hidden">
+    <div class="p-card-padding">
+      <div class="flex justify-between items-center mb-3">
+        <span class="font-label-xs text-label-xs text-on-surface-variant uppercase tracking-widest">MISSION_COUNTDOWN // BRAND_LAUNCH</span>
+        <span class="w-1.5 h-1.5 rounded-full bg-primary-container animate-pulse"></span>
       </div>
-      <span class="launch-divider">:</span>
-      <div class="launch-unit">
-        <span class="launch-num" id="cdHours">00</span>
-        <div class="launch-unit-label">Hours</div>
-      </div>
-      <span class="launch-divider">:</span>
-      <div class="launch-unit">
-        <span class="launch-num" id="cdMins">00</span>
-        <div class="launch-unit-label">Mins</div>
-      </div>
-      <span class="launch-divider">:</span>
-      <div class="launch-unit">
-        <span class="launch-num" id="cdSecs">00</span>
-        <div class="launch-unit-label">Secs</div>
+      <div class="flex bg-surface-container-low border border-outline-variant/20">
+        <div class="flex-1 text-center py-3">
+          <div class="font-display-mono text-primary-container text-2xl animate-pulse-subtle" id="cdDays">29</div>
+          <div class="font-label-xs text-[8px] opacity-40 uppercase">DAYS</div>
+        </div>
+        <div class="w-px bg-outline-variant/20"></div>
+        <div class="flex-1 text-center py-3">
+          <div class="font-display-mono text-primary-container text-2xl animate-pulse-subtle" id="cdHours">00</div>
+          <div class="font-label-xs text-[8px] opacity-40 uppercase">HRS</div>
+        </div>
+        <div class="w-px bg-outline-variant/20"></div>
+        <div class="flex-1 text-center py-3">
+          <div class="font-display-mono text-primary-container text-2xl animate-pulse-subtle" id="cdMins">00</div>
+          <div class="font-label-xs text-[8px] opacity-40 uppercase">MINS</div>
+        </div>
+        <div class="w-px bg-outline-variant/20"></div>
+        <div class="flex-1 text-center py-3">
+          <div class="font-display-mono text-primary-container text-2xl animate-pulse-subtle" id="cdSecs">00</div>
+          <div class="font-label-xs text-[8px] opacity-40 uppercase">SECS</div>
+        </div>
       </div>
     </div>
-  </div>
-</div>
-
-<!-- ALARMS -->
-<div class="section" style="margin-top:24px">
-  <div class="section-label">Daily Alarms</div>
-  <div class="alarm-list" id="alarmList"></div>
-</div>
-
-<!-- TODAY'S CHECKLIST -->
-<div class="section" style="margin-top:24px">
-  <div class="section-label">Today's Non-Negotiables</div>
-  <div class="checklist" id="checklist"></div>
-  <div style="margin-top:12px">
-    <div class="progress-wrap">
-      <div class="progress-header">
-        <span class="progress-title">Daily completion</span>
-        <span class="progress-pct" id="progressPct">0%</span>
+    <div class="px-card-padding pb-card-padding space-y-1">
+      <div class="flex justify-between items-end">
+        <span class="font-label-xs text-[9px] text-primary-container uppercase font-bold" id="checklistPct">CHECKLIST: 0%</span>
+        <span class="font-label-xs text-[8px] text-on-surface-variant uppercase" id="streakLabel">STREAK: 0 DAYS</span>
       </div>
-      <div class="progress-track">
-        <div class="progress-fill" id="progressFill" style="width:0%"></div>
+      <div class="h-1.5 w-full bg-surface-container-highest micro-border overflow-hidden">
+        <div class="h-full bg-primary-container shadow-[0_0_8px_rgba(0,255,65,0.4)] transition-all duration-500" id="progressBar" style="width:0%"></div>
       </div>
     </div>
-  </div>
-</div>
+  </section>
 
-<!-- STREAK -->
-<div class="section" style="margin-top:24px">
-  <div class="section-label">Discipline Streak</div>
-  <div class="streak-bar">
-    <div class="streak-number" id="streakNum">0</div>
-    <div class="streak-info">
-      <div class="streak-label">days consistent</div>
-      <div class="streak-dots" id="streakDots"></div>
+  <div id="view-dash" class="view active space-y-4">
+    <section class="micro-border bg-surface-container-lowest">
+      <div class="p-2 border-b border-outline-variant/40 flex justify-between items-center bg-surface-container-low">
+        <span class="font-label-xs text-label-xs opacity-60 uppercase tracking-widest">SYSTEM_ALARMS</span>
+        <span class="material-symbols-outlined text-[14px] text-primary-container">notifications_active</span>
+      </div>
+      <div id="alarmList" class="divide-y divide-outline-variant/10"></div>
+    </section>
+
+    <section class="micro-border bg-surface-container-lowest divide-x divide-outline-variant/20 flex min-h-[180px]">
+      <div class="w-1/2 flex flex-col">
+        <div class="p-2 border-b border-outline-variant/40 bg-surface-container-low">
+          <span class="font-label-xs text-label-xs opacity-60 uppercase tracking-widest">Habit_Queue</span>
+        </div>
+        <div class="p-3 space-y-2.5 flex-grow" id="habitList"></div>
+        <div class="p-2 border-t border-outline-variant/20">
+          <button onclick="resetDay()" class="w-full font-label-xs text-[9px] uppercase tracking-wider text-on-surface-variant hover:text-error transition-colors">RESET_TODAY</button>
+        </div>
+      </div>
+      <div class="w-1/2 flex flex-col">
+        <div class="p-2 border-b border-outline-variant/40 bg-surface-container-low">
+          <span class="font-label-xs text-label-xs opacity-60 uppercase tracking-widest">Consistency</span>
+        </div>
+        <div class="p-3 flex flex-col justify-between h-full">
+          <div class="grid grid-cols-7 gap-1 w-fit mx-auto" id="streakGrid"></div>
+          <div class="mt-2 text-right">
+            <div class="font-display-mono text-primary-container text-xl leading-none" id="streakNum">0</div>
+            <div class="font-label-xs text-[8px] uppercase opacity-60 tracking-tighter">Day_Streak</div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div id="view-logs" class="view space-y-4">
+    <section class="micro-border bg-surface-container-lowest">
+      <div class="p-2 border-b border-outline-variant/40 bg-surface-container-low">
+        <span class="font-label-xs text-label-xs opacity-60 uppercase tracking-widest">ACTIVITY_LOG</span>
+      </div>
+      <div id="logList" class="divide-y divide-outline-variant/10 max-h-96 overflow-y-auto"></div>
+    </section>
+  </div>
+
+  <div id="view-alerts" class="view space-y-4">
+    <section class="micro-border bg-surface-container-lowest">
+      <div class="p-2 border-b border-outline-variant/40 bg-surface-container-low">
+        <span class="font-label-xs text-label-xs opacity-60 uppercase tracking-widest">UPCOMING_ALARMS</span>
+      </div>
+      <div id="upcomingAlarms" class="divide-y divide-outline-variant/10"></div>
+    </section>
+  </div>
+
+  <div id="view-system" class="view space-y-4">
+    <section class="micro-border bg-surface-container-lowest p-card-padding space-y-3">
+      <div class="font-label-xs text-label-xs opacity-60 uppercase tracking-widest mb-2">SYSTEM_INFO</div>
+      <div class="flex justify-between items-center py-2 border-b border-outline-variant/20">
+        <span class="font-code-sm text-[11px] uppercase opacity-60">Operator</span>
+        <span class="font-code-sm text-[11px] text-primary-container">M SHAHROZ QASIM</span>
+      </div>
+      <div class="flex justify-between items-center py-2 border-b border-outline-variant/20">
+        <span class="font-code-sm text-[11px] uppercase opacity-60">Base</span>
+        <span class="font-code-sm text-[11px] text-primary-container">LAHORE, PK</span>
+      </div>
+      <div class="flex justify-between items-center py-2 border-b border-outline-variant/20">
+        <span class="font-code-sm text-[11px] uppercase opacity-60">Mission</span>
+        <span class="font-code-sm text-[11px] text-primary-container">D2C LEATHER BRAND</span>
+      </div>
+      <div class="flex justify-between items-center py-2 border-b border-outline-variant/20">
+        <span class="font-code-sm text-[11px] uppercase opacity-60">Entity</span>
+        <span class="font-code-sm text-[11px] text-primary-container">COLORADO, USA</span>
+      </div>
+      <div class="flex justify-between items-center py-2 border-b border-outline-variant/20">
+        <span class="font-code-sm text-[11px] uppercase opacity-60">Products</span>
+        <span class="font-code-sm text-[11px] text-primary-container">7 HERO / 17 VARIANTS</span>
+      </div>
+      <div class="flex justify-between items-center py-2 border-b border-outline-variant/20">
+        <span class="font-code-sm text-[11px] uppercase opacity-60">Notifications</span>
+        <span class="font-code-sm text-[11px] text-primary-container" id="notifStatus">CHECKING...</span>
+      </div>
+      <div class="flex justify-between items-center py-2">
+        <span class="font-code-sm text-[11px] uppercase opacity-60">Total Days Running</span>
+        <span class="font-code-sm text-[11px] text-primary-container" id="totalDays">—</span>
+      </div>
+    </section>
+    <button onclick="resetAll()" class="w-full micro-border py-3 font-label-xs text-[10px] uppercase tracking-widest text-on-surface-variant hover:text-error hover:border-error transition-colors">
+      FACTORY_RESET // CLEAR ALL DATA
+    </button>
+    <div class="text-center py-4">
+      <span class="font-label-xs text-[9px] uppercase tracking-widest opacity-30">Developed by M Shahroz Qasim</span>
     </div>
   </div>
-</div>
 
-<button class="reset-btn" onclick="resetDay()">Reset today's checklist</button>
+</main>
 
-<div class="spacer"></div>
-<div class="toast" id="toast"></div>
+<nav class="fixed bottom-0 w-full z-50 bg-surface-container-lowest/95 backdrop-blur-md border-t border-outline-variant/40 flex justify-around items-center h-16 px-unit-md">
+  <button onclick="switchTab('dash')" class="tab-btn active flex flex-col items-center justify-center w-full h-full" id="tab-dash">
+    <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1;">grid_view</span>
+    <span class="font-label-xs text-label-xs uppercase">Dash</span>
+  </button>
+  <button onclick="switchTab('logs')" class="tab-btn flex flex-col items-center justify-center w-full h-full" id="tab-logs">
+    <span class="material-symbols-outlined">database</span>
+    <span class="font-label-xs text-label-xs uppercase">Logs</span>
+  </button>
+  <button onclick="switchTab('alerts')" class="tab-btn flex flex-col items-center justify-center w-full h-full" id="tab-alerts">
+    <span class="material-symbols-outlined">warning</span>
+    <span class="font-label-xs text-label-xs uppercase">Alerts</span>
+  </button>
+  <button onclick="switchTab('system')" class="tab-btn flex flex-col items-center justify-center w-full h-full" id="tab-system">
+    <span class="material-symbols-outlined">terminal</span>
+    <span class="font-label-xs text-label-xs uppercase">System</span>
+  </button>
+</nav>
+
+<div id="toast"></div>
 
 <script>
-// ─── CONFIG ───────────────────────────────────────────────────────────────────
-const LAUNCH_DATE = new Date();
-LAUNCH_DATE.setDate(LAUNCH_DATE.getDate() + 29);
-LAUNCH_DATE.setHours(9, 0, 0, 0);
-
-const START_DATE = new Date();
-START_DATE.setDate(START_DATE.getDate() - 61);
+const START_DATE = new Date(); START_DATE.setDate(START_DATE.getDate()-61); START_DATE.setHours(0,0,0,0);
+const LAUNCH_DATE = new Date(); LAUNCH_DATE.setDate(LAUNCH_DATE.getDate()+29); LAUNCH_DATE.setHours(9,0,0,0);
 
 const ALARMS = [
-  { id: 'wake',    time: '07:00', label: 'Wake up — eat breakfast, no excuses' },
-  { id: 'work',    time: '07:30', label: 'Deep work begins — phone away' },
-  { id: 'lunch',   time: '12:30', label: 'Lunch + 20 min walk outside' },
-  { id: 'work2',   time: '13:30', label: 'Second work block — admin & coordination' },
-  { id: 'stop',    time: '17:30', label: 'Work ends — step away from the screen' },
-  { id: 'light',   time: '18:30', label: 'Light work — planning & brain dump only' },
-  { id: 'noscreen','time': '21:00', label: 'No screens — wind down' },
-  { id: 'sleep',   time: '22:30', label: 'Sleep. Non-negotiable. 2am is dead.' },
+  {id:'wake',    time:'07:00', label:'Wake Up — Eat Breakfast'},
+  {id:'work1',   time:'07:30', label:'Deep Work Session A'},
+  {id:'lunch',   time:'12:30', label:'Lunch Break + 20min Walk'},
+  {id:'work2',   time:'13:30', label:'Deep Work Session B'},
+  {id:'workend', time:'17:30', label:'Work Ends — Step Away'},
+  {id:'light',   time:'18:30', label:'Light Work — Planning Only'},
+  {id:'noscreen',time:'21:00', label:'No Screens — Wind Down'},
+  {id:'sleep',   time:'22:30', label:'Sleep — Non Negotiable'},
 ];
 
-const TASKS = [
-  { id: 'breakfast', text: 'Ate a real breakfast' },
-  { id: 'deep',      text: 'Completed deep work block' },
-  { id: 'lunch',     text: 'Ate proper lunch' },
-  { id: 'walk',      text: 'Took a walk today' },
-  { id: 'water',     text: 'Drank enough water' },
-  { id: 'dump',      text: 'Did evening brain dump (notebook)' },
-  { id: 'sleep',     text: 'In bed by 10:30 PM' },
+const HABITS = [
+  {id:'breakfast', label:'Breakfast'},
+  {id:'deepwork',  label:'Deep Work'},
+  {id:'lunch',     label:'Lunch'},
+  {id:'walk',      label:'Walk'},
+  {id:'water',     label:'Water'},
+  {id:'braindump', label:'Brain Dump'},
+  {id:'sleep',     label:'Sleep 10:30'},
 ];
 
-// ─── STATE ────────────────────────────────────────────────────────────────────
-function todayKey() {
-  const d = new Date();
-  return `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
-}
-
-function loadState() {
-  try {
-    const raw = localStorage.getItem('shahroz_state');
-    return raw ? JSON.parse(raw) : {};
-  } catch { return {}; }
-}
-
-function saveState(s) {
-  localStorage.setItem('shahroz_state', JSON.stringify(s));
-}
-
+function todayKey() { const d=new Date(); return `szq-${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`; }
+function loadState() { try { return JSON.parse(localStorage.getItem('szq_os')||'{}'); } catch { return {}; } }
+function saveState() { localStorage.setItem('szq_os',JSON.stringify(state)); }
 let state = loadState();
+if (!state.streak) state.streak={days:[],lastDate:null};
+if (!state.logs)   state.logs=[];
+function todayData() { const k=todayKey(); if(!state[k]) state[k]={habits:{}}; return state[k]; }
 
-function getTodayTasks() {
-  const key = todayKey();
-  if (!state[key]) state[key] = { tasks: {}, alarmsFired: {} };
-  return state[key];
+const pad = n => String(n).padStart(2,'0');
+function timeToMins(t) { const [h,m]=t.split(':').map(Number); return h*60+m; }
+function nowMins() { const n=new Date(); return n.getHours()*60+n.getMinutes(); }
+function countdown(alarm) {
+  const nm=nowMins(), am=timeToMins(alarm.time);
+  let diff=am-nm; if(diff<0) diff+=1440;
+  const h=Math.floor(diff/60), m=diff%60;
+  return h===0 ? `${m}m` : `${h}h ${m}m`;
 }
-
-// ─── CLOCK ────────────────────────────────────────────────────────────────────
-function pad(n) { return String(n).padStart(2, '0'); }
+function addLog(msg) {
+  const now=new Date();
+  state.logs.unshift({time:`${pad(now.getHours())}:${pad(now.getMinutes())}`,msg});
+  if(state.logs.length>100) state.logs.pop();
+  saveState();
+}
 
 function updateClock() {
-  const now = new Date();
-  document.getElementById('clockDisplay').textContent =
-    `${pad(now.getHours())}:${pad(now.getMinutes())}`;
-  const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  document.getElementById('dateDisplay').textContent =
-    `${days[now.getDay()]}, ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
-
-  // Day counter
-  const diff = Math.floor((now - START_DATE) / 86400000) + 1;
-  document.getElementById('dayBadge').textContent = `DAY ${diff}`;
+  const now=new Date();
+  document.getElementById('live-clock').textContent=`${pad(now.getHours())}:${pad(now.getMinutes())}`;
+  const days=['SUN','MON','TUE','WED','THU','FRI','SAT'];
+  const months=['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+  document.getElementById('live-date').textContent=`${days[now.getDay()]} ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()} // PKT`;
+  const dayNum=Math.floor((now-START_DATE)/86400000)+1;
+  document.getElementById('dayBadge').textContent=`DAY ${dayNum}`;
+  document.getElementById('totalDays').textContent=`${dayNum} DAYS RUNNING`;
 }
 
-// ─── COUNTDOWN ────────────────────────────────────────────────────────────────
 function updateCountdown() {
-  const now = new Date();
-  const diff = LAUNCH_DATE - now;
-  if (diff <= 0) {
-    document.getElementById('cdDays').textContent = '00';
-    document.getElementById('cdHours').textContent = '00';
-    document.getElementById('cdMins').textContent = '00';
-    document.getElementById('cdSecs').textContent = '00';
-    return;
-  }
-  const d = Math.floor(diff / 86400000);
-  const h = Math.floor((diff % 86400000) / 3600000);
-  const m = Math.floor((diff % 3600000) / 60000);
-  const s = Math.floor((diff % 60000) / 1000);
-  document.getElementById('cdDays').textContent = pad(d);
-  document.getElementById('cdHours').textContent = pad(h);
-  document.getElementById('cdMins').textContent = pad(m);
-  document.getElementById('cdSecs').textContent = pad(s);
+  const diff=LAUNCH_DATE-new Date();
+  if(diff<=0){['cdDays','cdHours','cdMins','cdSecs'].forEach(id=>document.getElementById(id).textContent='00');return;}
+  document.getElementById('cdDays').textContent=pad(Math.floor(diff/86400000));
+  document.getElementById('cdHours').textContent=pad(Math.floor((diff%86400000)/3600000));
+  document.getElementById('cdMins').textContent=pad(Math.floor((diff%3600000)/60000));
+  document.getElementById('cdSecs').textContent=pad(Math.floor((diff%60000)/1000));
 }
 
-// ─── ALARMS ───────────────────────────────────────────────────────────────────
-function timeToMinutes(t) {
-  const [h, m] = t.split(':').map(Number);
-  return h * 60 + m;
-}
-
-function minutesToDisplay(mins) {
-  const h = Math.floor(mins / 60) % 24;
-  const m = mins % 60;
-  const ampm = h >= 12 ? 'PM' : 'AM';
-  const hh = h % 12 || 12;
-  return `${hh}:${pad(m)} ${ampm}`;
-}
-
-function getNextAlarm() {
-  const now = new Date();
-  const nowMins = now.getHours() * 60 + now.getMinutes();
-  const sorted = [...ALARMS].sort((a, b) => timeToMinutes(a.time) - timeToMinutes(b.time));
-  const next = sorted.find(a => timeToMinutes(a.time) > nowMins);
-  return next || sorted[0];
-}
-
-function getCountdownToAlarm(alarm) {
-  const now = new Date();
-  const nowMins = now.getHours() * 60 + now.getMinutes();
-  const alarmMins = timeToMinutes(alarm.time);
-  let diff = alarmMins - nowMins;
-  if (diff < 0) diff += 1440;
-  const h = Math.floor(diff / 60);
-  const m = diff % 60;
-  if (h === 0) return `in ${m}m`;
-  return `in ${h}h ${m}m`;
-}
+function getNextAlarm() { const nm=nowMins(); return ALARMS.find(a=>timeToMins(a.time)>nm)||ALARMS[0]; }
 
 function renderAlarms() {
-  const now = new Date();
-  const nowMins = now.getHours() * 60 + now.getMinutes();
-  const next = getNextAlarm();
-  const container = document.getElementById('alarmList');
-  container.innerHTML = '';
-
-  ALARMS.forEach(alarm => {
-    const aMins = timeToMinutes(alarm.time);
-    const isPast = aMins <= nowMins;
-    const isNext = alarm.id === next.id;
-
-    const card = document.createElement('div');
-    card.className = `alarm-card${isNext ? ' active' : ''}${isPast && !isNext ? ' fired' : ''}`;
-
-    const [h, m] = alarm.time.split(':').map(Number);
-    const ampm = h >= 12 ? 'PM' : 'AM';
-    const hh = h % 12 || 12;
-    const displayTime = `${hh}:${pad(m)} ${ampm}`;
-
-    card.innerHTML = `
-      <div class="alarm-toggle"></div>
-      <div class="alarm-info">
-        <div class="alarm-time">${displayTime}</div>
-        <div class="alarm-label">${alarm.label}</div>
+  const nm=nowMins(), next=getNextAlarm();
+  const container=document.getElementById('alarmList'); container.innerHTML='';
+  ALARMS.forEach(a=>{
+    const am=timeToMins(a.time), isPast=am<nm, isNext=a.id===next.id;
+    const row=document.createElement('div');
+    row.className=`p-2.5 px-4 flex justify-between items-center ${isNext?'alarm-row-active':isPast?'alarm-row-past':''}`;
+    row.innerHTML=`
+      <div class="flex items-center gap-3">
+        <span class="material-symbols-outlined text-sm ${isNext?'text-primary-container animate-pulse':'text-on-surface-variant'}">${isPast&&!isNext?'check_circle':isNext?'sync':'radio_button_unchecked'}</span>
+        <span class="font-code-sm text-code-sm uppercase ${isNext?'text-primary-container font-bold':''}">${a.time} — ${a.label}</span>
       </div>
-      <div class="alarm-countdown">${isNext ? getCountdownToAlarm(alarm) : isPast ? 'done' : getCountdownToAlarm(alarm)}</div>
-    `;
-    container.appendChild(card);
+      <span class="font-label-xs text-[9px] uppercase ${isNext?'text-primary-container':'opacity-40'}">${isPast&&!isNext?'DONE':countdown(a)}</span>`;
+    container.appendChild(row);
   });
 
-  // Update next alarm bar
-  document.getElementById('nextAlarmText').textContent =
-    `${minutesToDisplay(timeToMinutes(next.time))} — ${next.label}`;
+  const upcoming=document.getElementById('upcomingAlarms'); upcoming.innerHTML='';
+  const future=ALARMS.filter(a=>timeToMins(a.time)>nm);
+  if(!future.length){ upcoming.innerHTML=`<div class="p-4 text-center font-code-sm opacity-40 uppercase">All alarms completed</div>`; return; }
+  future.forEach(a=>{
+    const row=document.createElement('div');
+    row.className=`p-2.5 px-4 flex justify-between items-center ${a.id===next.id?'alarm-row-active':''}`;
+    row.innerHTML=`<span class="font-code-sm text-code-sm uppercase ${a.id===next.id?'text-primary-container font-bold':''}">${a.time} — ${a.label}</span><span class="font-label-xs text-[9px] text-primary-container uppercase">${countdown(a)}</span>`;
+    upcoming.appendChild(row);
+  });
 }
 
-// ─── CHECKLIST ────────────────────────────────────────────────────────────────
-function renderChecklist() {
-  const today = getTodayTasks();
-  const container = document.getElementById('checklist');
-  container.innerHTML = '';
-
-  let done = 0;
-  TASKS.forEach(task => {
-    const isDone = !!today.tasks[task.id];
-    if (isDone) done++;
-
-    const item = document.createElement('div');
-    item.className = `check-item${isDone ? ' done' : ''}`;
-    item.innerHTML = `
-      <div class="check-box">${isDone ? '✓' : ''}</div>
-      <div class="check-text">${task.text}</div>
-    `;
-    item.onclick = () => toggleTask(task.id);
+function renderHabits() {
+  const today=todayData(), container=document.getElementById('habitList'); container.innerHTML='';
+  let done=0;
+  HABITS.forEach(h=>{
+    const isDone=!!today.habits[h.id]; if(isDone) done++;
+    const item=document.createElement('div');
+    item.className=`habit-item flex items-center gap-2 ${isDone?'done':''}`;
+    item.onclick=()=>toggleHabit(h.id);
+    item.innerHTML=`
+      <div class="w-4 h-4 border ${isDone?'border-primary-container bg-primary-container/20':'border-outline-variant'} flex items-center justify-center flex-shrink-0">
+        ${isDone?'<span class="material-symbols-outlined text-[10px] text-primary-container">check</span>':''}
+      </div>
+      <span class="font-code-sm text-[11px] uppercase habit-label">${h.label}</span>`;
     container.appendChild(item);
   });
-
-  const pct = Math.round((done / TASKS.length) * 100);
-  document.getElementById('progressPct').textContent = `${pct}%`;
-  document.getElementById('progressFill').style.width = `${pct}%`;
-
-  // Auto-complete streak if all done
-  if (done === TASKS.length) {
-    markStreakDay();
-  }
+  const pct=Math.round((done/HABITS.length)*100);
+  document.getElementById('progressBar').style.width=`${pct}%`;
+  document.getElementById('checklistPct').textContent=`CHECKLIST: ${pct}%`;
+  const strip=document.getElementById('healthStrip');
+  if(pct===100){strip.textContent='SYSTEM_HEALTH: OPTIMAL ✓';strip.style.background='rgba(0,255,65,0.12)';strip.style.color='#00ff41';strip.style.borderColor='rgba(0,255,65,0.3)';}
+  else if(pct>=50){strip.textContent=`SYSTEM_HEALTH: ${pct}% — KEEP PUSHING`;strip.style.background='rgba(255,219,60,0.1)';strip.style.color='#ffdb3c';strip.style.borderColor='rgba(255,219,60,0.3)';}
+  else{strip.textContent=`SYSTEM_HEALTH: ${pct}% — NEEDS ATTENTION`;strip.style.background='rgba(255,170,0,0.08)';strip.style.color='#ffaa00';strip.style.borderColor='rgba(255,170,0,0.25)';}
+  if(done===HABITS.length) markStreakDay();
 }
 
-function toggleTask(id) {
-  const today = getTodayTasks();
-  today.tasks[id] = !today.tasks[id];
-  state[todayKey()] = today;
-  saveState(state);
-  renderChecklist();
-  if (today.tasks[id]) showToast('Done ✓');
+function toggleHabit(id) {
+  const today=todayData(); today.habits[id]=!today.habits[id]; state[todayKey()]=today;
+  const h=HABITS.find(x=>x.id===id);
+  if(today.habits[id]) addLog(`COMPLETED: ${h.label.toUpperCase()}`);
+  saveState(); renderHabits();
+  if(today.habits[id]) showToast(`✓ ${h.label.toUpperCase()}`);
 }
 
-// ─── STREAK ───────────────────────────────────────────────────────────────────
 function markStreakDay() {
-  if (!state.streak) state.streak = { days: [], lastDate: null };
-  const today = todayKey();
-  if (state.streak.lastDate !== today) {
-    state.streak.lastDate = today;
-    state.streak.days.push(today);
-    if (state.streak.days.length > 30) state.streak.days.shift();
-    saveState(state);
+  const today=todayKey();
+  if(state.streak.lastDate!==today){
+    state.streak.lastDate=today; state.streak.days.push(today);
+    if(state.streak.days.length>28) state.streak.days.shift();
+    addLog('STREAK_DAY: ALL HABITS COMPLETE'); saveState();
   }
   renderStreak();
 }
 
 function renderStreak() {
-  if (!state.streak) state.streak = { days: [], lastDate: null };
-  const count = state.streak.days.length;
-  document.getElementById('streakNum').textContent = count;
-
-  const dotsEl = document.getElementById('streakDots');
-  dotsEl.innerHTML = '';
-  const today = todayKey();
-
-  for (let i = 0; i < 30; i++) {
-    const dot = document.createElement('div');
-    const dayKey = state.streak.days[i];
-    dot.className = `streak-dot${dayKey ? (dayKey === today ? ' today' : ' filled') : ''}`;
-    dotsEl.appendChild(dot);
+  const count=state.streak.days.length;
+  document.getElementById('streakNum').textContent=count;
+  document.getElementById('streakLabel').textContent=`STREAK: ${count} DAYS`;
+  const grid=document.getElementById('streakGrid'); grid.innerHTML='';
+  const today=todayKey();
+  for(let i=0;i<28;i++){
+    const d=document.createElement('div');
+    const dayKey=state.streak.days[i];
+    d.className=`streak-dot ${dayKey?(dayKey===today?'bg-primary-container shadow-[0_0_4px_rgba(0,255,65,0.6)]':'bg-primary-container'):'bg-surface-container-highest'}`;
+    grid.appendChild(d);
   }
 }
 
-// ─── NOTIFICATIONS ────────────────────────────────────────────────────────────
-function updateNotifBanner() {
-  const banner = document.getElementById('notifBanner');
-  if (!('Notification' in window)) {
-    banner.classList.add('hidden');
-    return;
-  }
-  if (Notification.permission === 'granted') {
-    banner.classList.add('hidden');
-  } else {
-    banner.classList.remove('hidden');
-  }
+function renderLogs() {
+  const container=document.getElementById('logList');
+  if(!state.logs.length){container.innerHTML=`<div class="p-4 text-center font-code-sm opacity-40 uppercase">No activity logged yet</div>`;return;}
+  container.innerHTML=state.logs.slice(0,50).map(l=>`
+    <div class="p-2.5 px-4 flex justify-between items-center">
+      <span class="font-code-sm text-[11px] text-primary-container">${l.msg}</span>
+      <span class="font-label-xs text-[8px] opacity-40">${l.time}</span>
+    </div>`).join('');
+}
+
+function updateNotifUI() {
+  const banner=document.getElementById('notif-banner'), icon=document.getElementById('notifIcon'), status=document.getElementById('notifStatus');
+  if(!('Notification' in window)){banner.classList.add('hidden');status.textContent='NOT SUPPORTED';return;}
+  if(Notification.permission==='granted'){
+    banner.classList.add('hidden'); icon.textContent='notifications_active'; icon.style.color='#00ff41'; status.textContent='GRANTED ✓'; scheduleNotifications();
+  } else { banner.classList.remove('hidden'); status.textContent='PERMISSION NEEDED'; }
 }
 
 async function requestNotifPermission() {
-  if (!('Notification' in window)) {
-    showToast('Notifications not supported on this browser');
-    return;
-  }
-  const perm = await Notification.requestPermission();
-  if (perm === 'granted') {
-    updateNotifBanner();
-    showToast('Notifications enabled ✓');
-    scheduleNotifications();
-  } else {
-    showToast('Permission denied — enable in browser settings');
-  }
+  if(!('Notification' in window)){showToast('NOT SUPPORTED');return;}
+  if(Notification.permission==='granted'){showToast('NOTIFICATIONS ALREADY ACTIVE');return;}
+  const perm=await Notification.requestPermission();
+  if(perm==='granted'){updateNotifUI();showToast('NOTIFICATIONS ENABLED ✓');addLog('NOTIFICATIONS: ENABLED');}
+  else{showToast('PERMISSION DENIED — CHECK BROWSER SETTINGS');}
 }
 
-let scheduledAlarms = {};
-
+let scheduledAlarmTimers={};
 function scheduleNotifications() {
-  if (Notification.permission !== 'granted') return;
-
-  // Clear existing
-  Object.values(scheduledAlarms).forEach(clearTimeout);
-  scheduledAlarms = {};
-
-  const now = new Date();
-  ALARMS.forEach(alarm => {
-    const [h, m] = alarm.time.split(':').map(Number);
-    const target = new Date();
-    target.setHours(h, m, 0, 0);
-    if (target <= now) target.setDate(target.getDate() + 1);
-    const delay = target - now;
-
-    scheduledAlarms[alarm.id] = setTimeout(() => {
-      new Notification(`⏰ ${alarm.time} — Shahroz`, {
-        body: alarm.label,
-        icon: 'https://via.placeholder.com/96/c8f135/0a0a0a?text=S',
-        badge: 'https://via.placeholder.com/32/c8f135/0a0a0a?text=S',
-        vibrate: [200, 100, 200],
-        tag: alarm.id,
-        renotify: true,
-      });
-    }, delay);
+  if(Notification.permission!=='granted') return;
+  Object.values(scheduledAlarmTimers).forEach(clearTimeout); scheduledAlarmTimers={};
+  const now=new Date();
+  ALARMS.forEach(alarm=>{
+    const [h,m]=alarm.time.split(':').map(Number), target=new Date();
+    target.setHours(h,m,0,0); if(target<=now) target.setDate(target.getDate()+1);
+    scheduledAlarmTimers[alarm.id]=setTimeout(()=>{
+      new Notification(`⏰ ${alarm.time} — SHAHROZ`,{body:alarm.label,tag:alarm.id,renotify:true,vibrate:[200,100,200]});
+    }, target-now);
   });
 }
 
-// ─── SERVICE WORKER ───────────────────────────────────────────────────────────
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('sw.js').then(() => {
-    if (Notification.permission === 'granted') scheduleNotifications();
-  }).catch(console.error);
-}
-
-// ─── TOAST ────────────────────────────────────────────────────────────────────
-let toastTimeout;
-function showToast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  clearTimeout(toastTimeout);
-  toastTimeout = setTimeout(() => t.classList.remove('show'), 2500);
-}
-
-// ─── RESET ────────────────────────────────────────────────────────────────────
-function resetDay() {
-  const key = todayKey();
-  state[key] = { tasks: {}, alarmsFired: {} };
-  saveState(state);
-  renderChecklist();
-  showToast('Today reset');
-}
-
-// ─── ALARM CHECKER (every minute) ────────────────────────────────────────────
-let lastFiredMinute = null;
-function checkAlarms() {
-  const now = new Date();
-  const nowMins = now.getHours() * 60 + now.getMinutes();
-  if (nowMins === lastFiredMinute) return;
-
-  ALARMS.forEach(alarm => {
-    if (timeToMinutes(alarm.time) === nowMins) {
-      lastFiredMinute = nowMins;
-      if (Notification.permission === 'granted') {
-        new Notification(`⏰ ${alarm.time} — Shahroz`, {
-          body: alarm.label,
-          tag: alarm.id,
-          renotify: true,
-        });
-      }
-      showToast(`🔔 ${alarm.time} — ${alarm.label}`);
+let lastFiredMin=-1;
+function checkAlarmFire() {
+  const nm=nowMins(); if(nm===lastFiredMin) return;
+  ALARMS.forEach(a=>{
+    if(timeToMins(a.time)===nm){
+      lastFiredMin=nm; showToast(`🔔 ${a.time} — ${a.label.toUpperCase()}`);
+      addLog(`ALARM_FIRED: ${a.time} ${a.label.toUpperCase()}`);
+      if(Notification.permission==='granted') new Notification(`⏰ ${a.time} — SHAHROZ`,{body:a.label,tag:a.id,renotify:true});
     }
   });
 }
 
-// ─── INIT ─────────────────────────────────────────────────────────────────────
-function init() {
-  updateClock();
-  updateCountdown();
-  renderAlarms();
-  renderChecklist();
-  renderStreak();
-  updateNotifBanner();
-
-  setInterval(() => {
-    updateClock();
-    updateCountdown();
-    renderAlarms();
-    checkAlarms();
-  }, 1000);
+function switchTab(tab) {
+  ['dash','logs','alerts','system'].forEach(t=>{
+    document.getElementById(`view-${t}`).classList.toggle('active',t===tab);
+    document.getElementById(`tab-${t}`).classList.toggle('active',t===tab);
+  });
+  if(tab==='logs') renderLogs();
 }
 
+function resetDay() { state[todayKey()]={habits:{}}; addLog('MANUAL_RESET: TODAY CLEARED'); saveState(); renderHabits(); showToast('TODAY RESET'); }
+function resetAll() {
+  if(!confirm('FACTORY RESET — delete all data?')) return;
+  localStorage.removeItem('szq_os'); state={streak:{days:[],lastDate:null},logs:[]}; saveState();
+  renderHabits(); renderStreak(); renderLogs(); showToast('FACTORY RESET COMPLETE');
+}
+
+let toastTimer;
+function showToast(msg) {
+  const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show');
+  clearTimeout(toastTimer); toastTimer=setTimeout(()=>t.classList.remove('show'),2800);
+}
+
+if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(()=>{});
+
+function init() {
+  updateClock(); updateCountdown(); renderAlarms(); renderHabits(); renderStreak(); updateNotifUI();
+  addLog('SESSION_START: LAUNCHPAD OS LOADED');
+  document.querySelectorAll('section').forEach((s,i)=>{
+    s.style.opacity='0'; s.style.transform='translateY(8px)';
+    s.style.transition=`all 0.35s cubic-bezier(0.16,1,0.3,1) ${i*0.04}s`;
+    setTimeout(()=>{s.style.opacity='1';s.style.transform='translateY(0)';},80);
+  });
+  setInterval(()=>{updateClock();updateCountdown();renderAlarms();checkAlarmFire();},1000);
+}
 init();
 </script>
 </body>
