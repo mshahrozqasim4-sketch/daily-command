@@ -3,103 +3,92 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
-<title>LAUNCHPAD OS — Shahroz</title>
+<title>LAUNCHPAD OS</title>
 <link rel="manifest" href="manifest.json"/>
 <meta name="theme-color" content="#0A0A0A"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&family=Inter:wght@400;600&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
-<script id="tailwind-config">
+<script>
 tailwind.config = {
-  darkMode: "class",
-  theme: {
-    extend: {
-      colors: {
-        "surface-bright": "#3a3939","surface-container-lowest": "#0e0e0e",
-        "error-container": "#93000a","secondary-container": "#ffdb3c",
-        "outline-variant": "#3b4b37","background": "#131313",
-        "surface-container-low": "#1c1b1b","on-primary-container": "#007117",
-        "on-background": "#e5e2e1","error": "#ffb4ab","on-secondary": "#3a3000",
-        "on-surface": "#e5e2e1","on-primary": "#003907","outline": "#84967e",
-        "surface-container-highest": "#353534","primary-container": "#00ff41",
-        "on-surface-variant": "#b9ccb2","surface-dim": "#131313","surface": "#131313",
-        "surface-container": "#201f1f","primary-fixed-dim": "#00e639",
-        "surface-container-high": "#2a2a2a","surface-tint": "#00e639",
-        "primary-fixed": "#72ff70","on-error": "#690005",
-      },
-      borderRadius: { DEFAULT:"0.125rem",lg:"0.25rem",xl:"0.5rem",full:"0.75rem" },
-      spacing: {
-        "card-padding":"12px","unit-sm":"8px","unit-md":"12px",
-        "grid-margin":"16px","unit-xs":"4px","unit-lg":"16px"
-      },
-      fontFamily: {
-        "display-mono":["JetBrains Mono"],"headline-sm":["JetBrains Mono"],
-        "label-xs":["JetBrains Mono"],"code-sm":["JetBrains Mono"],"body-md":["JetBrains Mono"]
-      },
-      fontSize: {
-        "display-mono":["24px",{lineHeight:"32px",letterSpacing:"-0.02em",fontWeight:"700"}],
-        "headline-sm":["18px",{lineHeight:"24px",letterSpacing:"-0.01em",fontWeight:"600"}],
-        "label-xs":["10px",{lineHeight:"12px",letterSpacing:"0.05em",fontWeight:"500"}],
-        "code-sm":["12px",{lineHeight:"16px",letterSpacing:"0",fontWeight:"400"}],
-        "body-md":["14px",{lineHeight:"20px",letterSpacing:"0",fontWeight:"400"}]
-      }
+  darkMode:"class",
+  theme:{extend:{
+    colors:{
+      "surface-container-lowest":"#0e0e0e","outline-variant":"#3b4b37",
+      "background":"#131313","surface-container-low":"#1c1b1b",
+      "on-background":"#e5e2e1","on-surface":"#e5e2e1","outline":"#84967e",
+      "surface-container-highest":"#353534","primary-container":"#00ff41",
+      "on-surface-variant":"#b9ccb2","surface":"#131313",
+      "surface-container":"#201f1f","surface-container-high":"#2a2a2a",
+      "primary-fixed":"#72ff70","error":"#ffb4ab","on-secondary":"#3a3000",
+      "secondary-container":"#ffdb3c",
+    },
+    borderRadius:{DEFAULT:"0.125rem",lg:"0.25rem",xl:"0.5rem",full:"0.75rem"},
+    spacing:{"card-padding":"12px","unit-sm":"8px","unit-md":"12px","grid-margin":"16px","unit-xs":"4px","unit-lg":"16px"},
+    fontFamily:{"display-mono":["JetBrains Mono"],"label-xs":["JetBrains Mono"],"code-sm":["JetBrains Mono"],"body-md":["JetBrains Mono"]},
+    fontSize:{
+      "display-mono":["24px",{lineHeight:"32px",letterSpacing:"-0.02em",fontWeight:"700"}],
+      "label-xs":["10px",{lineHeight:"12px",letterSpacing:"0.05em",fontWeight:"500"}],
+      "code-sm":["12px",{lineHeight:"16px",letterSpacing:"0",fontWeight:"400"}],
+      "body-md":["14px",{lineHeight:"20px",letterSpacing:"0",fontWeight:"400"}]
     }
-  }
+  }}
 }
 </script>
 <style>
-  body { background-color:#0A0A0A; color:#e5e2e1; -webkit-font-smoothing:antialiased; min-height:max(884px,100dvh); }
-  .micro-border { border:1px solid rgba(74,85,104,0.4); }
-  .material-symbols-outlined { font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24; }
-  ::-webkit-scrollbar { width:4px; }
-  ::-webkit-scrollbar-track { background:#0A0A0A; }
-  ::-webkit-scrollbar-thumb { background:#4A5568; border-radius:2px; }
-  ::-webkit-scrollbar-thumb:hover { background:#00ff41; }
-  .streak-dot { width:10px; height:10px; border-radius:1px; }
-  @keyframes custom-pulse { 0%,100%{opacity:1;transform:scale(1);} 50%{opacity:0.7;transform:scale(1.05);} }
-  .animate-pulse-subtle { animation:custom-pulse 2s infinite; }
-  .habit-item { cursor:pointer; user-select:none; transition:opacity 0.2s; }
-  .habit-item.done { opacity:0.4; }
-  .habit-item.done .habit-label { text-decoration:line-through; }
-  .alarm-row-active { background:rgba(0,255,65,0.06); border-left:3px solid #00ff41; }
-  .alarm-row-past { opacity:0.4; }
-  #toast {
-    position:fixed; bottom:80px; left:50%;
-    transform:translateX(-50%) translateY(60px);
-    background:#00ff41; color:#0a0a0a;
-    font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:700;
-    padding:8px 18px; border-radius:2px; transition:transform 0.25s ease;
-    z-index:9999; white-space:nowrap; letter-spacing:0.05em; pointer-events:none;
-  }
-  #toast.show { transform:translateX(-50%) translateY(0); }
-  #notif-banner { background:rgba(255,170,0,0.08); border:1px solid rgba(255,170,0,0.3); color:#ffaa00; }
-  #notif-banner.hidden { display:none; }
-  .tab-btn { transition:all 0.15s; color:#b9ccb2; }
-  .tab-btn.active { color:#00ff41; }
-  .tab-btn:not(.active) { opacity:0.5; }
-  .view { display:none; }
-  .view.active { display:block; }
+  body{background-color:#0A0A0A;color:#e5e2e1;-webkit-font-smoothing:antialiased;min-height:max(884px,100dvh);}
+  .micro-border{border:1px solid rgba(74,85,104,0.4);}
+  .material-symbols-outlined{font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24;}
+  ::-webkit-scrollbar{width:4px;}
+  ::-webkit-scrollbar-track{background:#0A0A0A;}
+  ::-webkit-scrollbar-thumb{background:#4A5568;border-radius:2px;}
+  .streak-dot{width:10px;height:10px;border-radius:1px;}
+  @keyframes cpulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:0.7;transform:scale(1.05);}}
+  .animate-pulse-subtle{animation:cpulse 2s infinite;}
+  .habit-item{cursor:pointer;user-select:none;transition:opacity 0.2s;}
+  .habit-item.done{opacity:0.4;}
+  .habit-item.done .habit-label{text-decoration:line-through;}
+  .alarm-row-active{background:rgba(0,255,65,0.06);border-left:3px solid #00ff41;}
+  .alarm-row-past{opacity:0.4;}
+  #toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(60px);background:#00ff41;color:#0a0a0a;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;padding:8px 18px;border-radius:2px;transition:transform 0.25s ease;z-index:9999;white-space:nowrap;pointer-events:none;}
+  #toast.show{transform:translateX(-50%) translateY(0);}
+  #notif-banner{background:rgba(255,170,0,0.08);border:1px solid rgba(255,170,0,0.3);color:#ffaa00;}
+  #notif-banner.hidden{display:none;}
+  .tab-btn{transition:all 0.15s;color:#b9ccb2;}
+  .tab-btn.active{color:#00ff41;}
+  .tab-btn:not(.active){opacity:0.5;}
+  .view{display:none;}
+  .view.active{display:block;}
+  /* Settings styles */
+  .settings-input{background:#1c1b1b;border:1px solid rgba(74,85,104,0.4);color:#e5e2e1;font-family:'JetBrains Mono',monospace;font-size:12px;padding:8px 12px;width:100%;outline:none;border-radius:2px;}
+  .settings-input:focus{border-color:rgba(0,255,65,0.5);}
+  .settings-btn{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;letter-spacing:0.1em;padding:6px 12px;border-radius:2px;cursor:pointer;transition:all 0.15s;}
+  .btn-primary{background:rgba(0,255,65,0.15);border:1px solid rgba(0,255,65,0.4);color:#00ff41;}
+  .btn-primary:hover{background:rgba(0,255,65,0.25);}
+  .btn-danger{background:rgba(255,68,68,0.1);border:1px solid rgba(255,68,68,0.3);color:#ff4444;}
+  .btn-danger:hover{background:rgba(255,68,68,0.2);}
+  .btn-muted{background:transparent;border:1px solid rgba(74,85,104,0.4);color:#b9ccb2;}
+  .btn-muted:hover{border-color:#b9ccb2;}
+  .editable-row{display:flex;align-items:center;gap:8px;padding:8px 12px;border-bottom:1px solid rgba(74,85,104,0.2);}
+  .editable-row:last-child{border-bottom:none;}
 </style>
 </head>
 <body class="font-body-md text-body-md">
 
+<!-- TOP BAR -->
 <header class="fixed top-0 w-full z-50 bg-background/95 backdrop-blur-md border-b border-outline-variant/40 flex justify-between items-center px-grid-margin h-14">
   <div class="flex items-center gap-3">
     <div class="flex items-center gap-1.5">
       <span class="material-symbols-outlined text-primary-container text-xl">schedule</span>
       <span class="font-display-mono text-xl text-primary-container uppercase tracking-tighter" id="dayBadge">DAY —</span>
     </div>
-    <div class="hidden sm:flex h-6 w-px bg-outline-variant/30"></div>
-    <div class="flex flex-col">
+    <div class="flex flex-col ml-2">
       <div class="flex items-center gap-1">
-        <span class="w-1.5 h-1.5 rounded-full bg-primary-fixed shadow-[0_0_4px_rgba(0,230,57,0.8)] animate-pulse"></span>
+        <span class="w-1.5 h-1.5 rounded-full bg-primary-fixed animate-pulse"></span>
         <span class="font-label-xs text-[9px] uppercase tracking-wider text-primary-fixed">SYS_STATUS: ONLINE</span>
       </div>
-      <div class="flex gap-3 mt-0.5">
-        <span class="font-label-xs text-[8px] uppercase tracking-tighter opacity-60">SHAHROZ_QASIM</span>
-        <span class="font-label-xs text-[8px] uppercase tracking-tighter opacity-60">LAHORE/PK</span>
-      </div>
+      <span class="font-label-xs text-[8px] uppercase tracking-tighter opacity-60" id="headerName">—</span>
     </div>
   </div>
   <button onclick="requestNotifPermission()" class="transition-colors duration-150 hover:bg-surface-container p-2 rounded">
@@ -111,45 +100,34 @@ tailwind.config = {
 
   <div id="notif-banner" class="px-3 py-2 flex items-center gap-3 micro-border cursor-pointer" onclick="requestNotifPermission()">
     <span class="material-symbols-outlined text-base">notifications_off</span>
-    <span class="font-label-xs text-[10px] uppercase tracking-wider flex-1">Enable push notifications for alarms</span>
+    <span class="font-label-xs text-[10px] uppercase tracking-wider flex-1">Enable push notifications</span>
     <span class="font-label-xs text-[10px] uppercase tracking-wider border border-current px-2 py-0.5">ENABLE</span>
   </div>
 
+  <!-- CLOCK -->
   <section class="flex flex-col items-center justify-center py-2">
     <h1 class="font-display-mono text-[72px] leading-none text-primary-container font-bold tracking-tighter drop-shadow-[0_0_15px_rgba(0,255,65,0.2)]" id="live-clock">00:00</h1>
-    <p class="font-label-xs text-label-xs text-on-surface-variant uppercase tracking-[0.2em] mt-2" id="live-date">— // PKT</p>
+    <p class="font-label-xs text-label-xs text-on-surface-variant uppercase tracking-[0.2em] mt-2" id="live-date">—</p>
   </section>
 
-  <div class="px-3 py-1 text-center font-label-xs text-[10px] font-bold uppercase tracking-widest border" id="healthStrip">
-    SYSTEM_HEALTH: CHECKING...
-  </div>
+  <!-- HEALTH STRIP -->
+  <div class="px-3 py-1 text-center font-label-xs text-[10px] font-bold uppercase tracking-widest border" id="healthStrip">SYSTEM_HEALTH: CHECKING...</div>
 
+  <!-- COUNTDOWN -->
   <section class="micro-border bg-surface-container-lowest overflow-hidden">
     <div class="p-card-padding">
       <div class="flex justify-between items-center mb-3">
-        <span class="font-label-xs text-label-xs text-on-surface-variant uppercase tracking-widest">MISSION_COUNTDOWN // BRAND_LAUNCH</span>
+        <span class="font-label-xs text-label-xs text-on-surface-variant uppercase tracking-widest">MISSION_COUNTDOWN</span>
         <span class="w-1.5 h-1.5 rounded-full bg-primary-container animate-pulse"></span>
       </div>
       <div class="flex bg-surface-container-low border border-outline-variant/20">
-        <div class="flex-1 text-center py-3">
-          <div class="font-display-mono text-primary-container text-2xl animate-pulse-subtle" id="cdDays">29</div>
-          <div class="font-label-xs text-[8px] opacity-40 uppercase">DAYS</div>
-        </div>
+        <div class="flex-1 text-center py-3"><div class="font-display-mono text-primary-container text-2xl animate-pulse-subtle" id="cdDays">—</div><div class="font-label-xs text-[8px] opacity-40 uppercase">DAYS</div></div>
         <div class="w-px bg-outline-variant/20"></div>
-        <div class="flex-1 text-center py-3">
-          <div class="font-display-mono text-primary-container text-2xl animate-pulse-subtle" id="cdHours">00</div>
-          <div class="font-label-xs text-[8px] opacity-40 uppercase">HRS</div>
-        </div>
+        <div class="flex-1 text-center py-3"><div class="font-display-mono text-primary-container text-2xl animate-pulse-subtle" id="cdHours">—</div><div class="font-label-xs text-[8px] opacity-40 uppercase">HRS</div></div>
         <div class="w-px bg-outline-variant/20"></div>
-        <div class="flex-1 text-center py-3">
-          <div class="font-display-mono text-primary-container text-2xl animate-pulse-subtle" id="cdMins">00</div>
-          <div class="font-label-xs text-[8px] opacity-40 uppercase">MINS</div>
-        </div>
+        <div class="flex-1 text-center py-3"><div class="font-display-mono text-primary-container text-2xl animate-pulse-subtle" id="cdMins">—</div><div class="font-label-xs text-[8px] opacity-40 uppercase">MINS</div></div>
         <div class="w-px bg-outline-variant/20"></div>
-        <div class="flex-1 text-center py-3">
-          <div class="font-display-mono text-primary-container text-2xl animate-pulse-subtle" id="cdSecs">00</div>
-          <div class="font-label-xs text-[8px] opacity-40 uppercase">SECS</div>
-        </div>
+        <div class="flex-1 text-center py-3"><div class="font-display-mono text-primary-container text-2xl animate-pulse-subtle" id="cdSecs">—</div><div class="font-label-xs text-[8px] opacity-40 uppercase">SECS</div></div>
       </div>
     </div>
     <div class="px-card-padding pb-card-padding space-y-1">
@@ -163,6 +141,7 @@ tailwind.config = {
     </div>
   </section>
 
+  <!-- DASH VIEW -->
   <div id="view-dash" class="view active space-y-4">
     <section class="micro-border bg-surface-container-lowest">
       <div class="p-2 border-b border-outline-variant/40 flex justify-between items-center bg-surface-container-low">
@@ -197,6 +176,7 @@ tailwind.config = {
     </section>
   </div>
 
+  <!-- LOGS VIEW -->
   <div id="view-logs" class="view space-y-4">
     <section class="micro-border bg-surface-container-lowest">
       <div class="p-2 border-b border-outline-variant/40 bg-surface-container-low">
@@ -206,6 +186,7 @@ tailwind.config = {
     </section>
   </div>
 
+  <!-- ALERTS VIEW -->
   <div id="view-alerts" class="view space-y-4">
     <section class="micro-border bg-surface-container-lowest">
       <div class="p-2 border-b border-outline-variant/40 bg-surface-container-low">
@@ -215,48 +196,111 @@ tailwind.config = {
     </section>
   </div>
 
+  <!-- SETTINGS VIEW -->
   <div id="view-system" class="view space-y-4">
-    <section class="micro-border bg-surface-container-lowest p-card-padding space-y-3">
-      <div class="font-label-xs text-label-xs opacity-60 uppercase tracking-widest mb-2">SYSTEM_INFO</div>
-      <div class="flex justify-between items-center py-2 border-b border-outline-variant/20">
-        <span class="font-code-sm text-[11px] uppercase opacity-60">Operator</span>
-        <span class="font-code-sm text-[11px] text-primary-container">M SHAHROZ QASIM</span>
+
+    <!-- PROFILE -->
+    <section class="micro-border bg-surface-container-lowest">
+      <div class="p-2 border-b border-outline-variant/40 bg-surface-container-low flex justify-between items-center">
+        <span class="font-label-xs text-label-xs opacity-60 uppercase tracking-widest">OPERATOR_PROFILE</span>
+        <button onclick="saveProfile()" class="settings-btn btn-primary">SAVE</button>
       </div>
-      <div class="flex justify-between items-center py-2 border-b border-outline-variant/20">
-        <span class="font-code-sm text-[11px] uppercase opacity-60">Base</span>
-        <span class="font-code-sm text-[11px] text-primary-container">LAHORE, PK</span>
-      </div>
-      <div class="flex justify-between items-center py-2 border-b border-outline-variant/20">
-        <span class="font-code-sm text-[11px] uppercase opacity-60">Mission</span>
-        <span class="font-code-sm text-[11px] text-primary-container">D2C LEATHER BRAND</span>
-      </div>
-      <div class="flex justify-between items-center py-2 border-b border-outline-variant/20">
-        <span class="font-code-sm text-[11px] uppercase opacity-60">Entity</span>
-        <span class="font-code-sm text-[11px] text-primary-container">COLORADO, USA</span>
-      </div>
-      <div class="flex justify-between items-center py-2 border-b border-outline-variant/20">
-        <span class="font-code-sm text-[11px] uppercase opacity-60">Products</span>
-        <span class="font-code-sm text-[11px] text-primary-container">7 HERO / 17 VARIANTS</span>
-      </div>
-      <div class="flex justify-between items-center py-2 border-b border-outline-variant/20">
-        <span class="font-code-sm text-[11px] uppercase opacity-60">Notifications</span>
-        <span class="font-code-sm text-[11px] text-primary-container" id="notifStatus">CHECKING...</span>
-      </div>
-      <div class="flex justify-between items-center py-2">
-        <span class="font-code-sm text-[11px] uppercase opacity-60">Total Days Running</span>
-        <span class="font-code-sm text-[11px] text-primary-container" id="totalDays">—</span>
+      <div class="p-card-padding space-y-3">
+        <div>
+          <div class="font-label-xs text-[9px] opacity-50 uppercase mb-1">Name</div>
+          <input class="settings-input" id="s_name" placeholder="Your full name" />
+        </div>
+        <div>
+          <div class="font-label-xs text-[9px] opacity-50 uppercase mb-1">Base / City</div>
+          <input class="settings-input" id="s_base" placeholder="e.g. Lahore, PK" />
+        </div>
+        <div>
+          <div class="font-label-xs text-[9px] opacity-50 uppercase mb-1">Mission</div>
+          <input class="settings-input" id="s_mission" placeholder="e.g. D2C Leather Brand" />
+        </div>
+        <div>
+          <div class="font-label-xs text-[9px] opacity-50 uppercase mb-1">Entity / Company</div>
+          <input class="settings-input" id="s_entity" placeholder="e.g. Colorado, USA" />
+        </div>
       </div>
     </section>
-    <button onclick="resetAll()" class="w-full micro-border py-3 font-label-xs text-[10px] uppercase tracking-widest text-on-surface-variant hover:text-error hover:border-error transition-colors">
-      FACTORY_RESET // CLEAR ALL DATA
-    </button>
-    <div class="text-center py-4">
-      <span class="font-label-xs text-[9px] uppercase tracking-widest opacity-30">Developed by M Shahroz Qasim</span>
+
+    <!-- LAUNCH DATE -->
+    <section class="micro-border bg-surface-container-lowest">
+      <div class="p-2 border-b border-outline-variant/40 bg-surface-container-low flex justify-between items-center">
+        <span class="font-label-xs text-label-xs opacity-60 uppercase tracking-widest">LAUNCH_DATE</span>
+        <button onclick="saveLaunchDate()" class="settings-btn btn-primary">SAVE</button>
+      </div>
+      <div class="p-card-padding">
+        <div class="font-label-xs text-[9px] opacity-50 uppercase mb-1">Target Launch Date</div>
+        <input class="settings-input" id="s_launch" type="date" />
+        <div class="font-label-xs text-[9px] opacity-40 mt-2">This drives the mission countdown timer</div>
+      </div>
+    </section>
+
+    <!-- START DATE -->
+    <section class="micro-border bg-surface-container-lowest">
+      <div class="p-2 border-b border-outline-variant/40 bg-surface-container-low flex justify-between items-center">
+        <span class="font-label-xs text-label-xs opacity-60 uppercase tracking-widest">JOURNEY_START</span>
+        <button onclick="saveStartDate()" class="settings-btn btn-primary">SAVE</button>
+      </div>
+      <div class="p-card-padding">
+        <div class="font-label-xs text-[9px] opacity-50 uppercase mb-1">Day 1 of your journey</div>
+        <input class="settings-input" id="s_start" type="date" />
+        <div class="font-label-xs text-[9px] opacity-40 mt-2">This drives the DAY counter in the header</div>
+      </div>
+    </section>
+
+    <!-- ALARMS -->
+    <section class="micro-border bg-surface-container-lowest">
+      <div class="p-2 border-b border-outline-variant/40 bg-surface-container-low flex justify-between items-center">
+        <span class="font-label-xs text-label-xs opacity-60 uppercase tracking-widest">ALARMS</span>
+        <button onclick="addAlarm()" class="settings-btn btn-primary">+ ADD</button>
+      </div>
+      <div id="alarmSettings" class="divide-y divide-outline-variant/10"></div>
+    </section>
+
+    <!-- HABITS -->
+    <section class="micro-border bg-surface-container-lowest">
+      <div class="p-2 border-b border-outline-variant/40 bg-surface-container-low flex justify-between items-center">
+        <span class="font-label-xs text-label-xs opacity-60 uppercase tracking-widest">HABITS</span>
+        <button onclick="addHabit()" class="settings-btn btn-primary">+ ADD</button>
+      </div>
+      <div id="habitSettings" class="divide-y divide-outline-variant/10"></div>
+    </section>
+
+    <!-- DANGER ZONE -->
+    <section class="micro-border bg-surface-container-lowest">
+      <div class="p-2 border-b border-outline-variant/40 bg-surface-container-low">
+        <span class="font-label-xs text-label-xs opacity-60 uppercase tracking-widest">SYSTEM</span>
+      </div>
+      <div class="p-card-padding space-y-2">
+        <div class="flex justify-between items-center py-2 border-b border-outline-variant/20">
+          <span class="font-code-sm text-[11px] uppercase opacity-60">Notifications</span>
+          <span class="font-code-sm text-[11px] text-primary-container" id="notifStatus">CHECKING...</span>
+        </div>
+        <div class="flex justify-between items-center py-2 border-b border-outline-variant/20">
+          <span class="font-code-sm text-[11px] uppercase opacity-60">Days Running</span>
+          <span class="font-code-sm text-[11px] text-primary-container" id="totalDays">—</span>
+        </div>
+        <button onclick="resetDay()" class="w-full micro-border py-2 mt-2 font-label-xs text-[10px] uppercase tracking-widest text-on-surface-variant hover:text-error hover:border-error transition-colors">
+          RESET TODAY'S HABITS
+        </button>
+        <button onclick="resetAll()" class="w-full micro-border py-2 font-label-xs text-[10px] uppercase tracking-widest text-on-surface-variant hover:text-error hover:border-error transition-colors">
+          FACTORY RESET — CLEAR ALL DATA
+        </button>
+      </div>
+    </section>
+
+    <div class="text-center py-2">
+      <span class="font-label-xs text-[9px] uppercase tracking-widest opacity-20">Developed by M Shahroz Qasim</span>
     </div>
+
   </div>
 
 </main>
 
+<!-- BOTTOM NAV -->
 <nav class="fixed bottom-0 w-full z-50 bg-surface-container-lowest/95 backdrop-blur-md border-t border-outline-variant/40 flex justify-around items-center h-16 px-unit-md">
   <button onclick="switchTab('dash')" class="tab-btn active flex flex-col items-center justify-center w-full h-full" id="tab-dash">
     <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1;">grid_view</span>
@@ -271,75 +315,90 @@ tailwind.config = {
     <span class="font-label-xs text-label-xs uppercase">Alerts</span>
   </button>
   <button onclick="switchTab('system')" class="tab-btn flex flex-col items-center justify-center w-full h-full" id="tab-system">
-    <span class="material-symbols-outlined">terminal</span>
-    <span class="font-label-xs text-label-xs uppercase">System</span>
+    <span class="material-symbols-outlined">settings</span>
+    <span class="font-label-xs text-label-xs uppercase">Settings</span>
   </button>
 </nav>
 
 <div id="toast"></div>
 
 <script>
-const START_DATE = new Date(); START_DATE.setDate(START_DATE.getDate()-61); START_DATE.setHours(0,0,0,0);
-const LAUNCH_DATE = new Date(); LAUNCH_DATE.setDate(LAUNCH_DATE.getDate()+29); LAUNCH_DATE.setHours(9,0,0,0);
+// ── DEFAULT CONFIG (used on first load) ───────────────────────────────────────
+const DEFAULTS = {
+  profile: { name:'Your Name', base:'Your City', mission:'Your Mission', entity:'Your Company' },
+  launchDate: (() => { const d=new Date(); d.setDate(d.getDate()+29); return d.toISOString().split('T')[0]; })(),
+  startDate: (() => { const d=new Date(); d.setDate(d.getDate()-61); return d.toISOString().split('T')[0]; })(),
+  alarms: [
+    {id:'wake',    time:'07:00', label:'Wake Up — Eat Breakfast'},
+    {id:'work1',   time:'07:30', label:'Deep Work Session A'},
+    {id:'lunch',   time:'12:30', label:'Lunch Break + 20min Walk'},
+    {id:'work2',   time:'13:30', label:'Deep Work Session B'},
+    {id:'workend', time:'17:30', label:'Work Ends — Step Away'},
+    {id:'light',   time:'18:30', label:'Light Work — Planning Only'},
+    {id:'noscreen',time:'21:00', label:'No Screens — Wind Down'},
+    {id:'sleep',   time:'22:30', label:'Sleep — Non Negotiable'},
+  ],
+  habits: [
+    {id:'breakfast', label:'Breakfast'},
+    {id:'deepwork',  label:'Deep Work'},
+    {id:'lunch',     label:'Lunch'},
+    {id:'walk',      label:'Walk'},
+    {id:'water',     label:'Water'},
+    {id:'braindump', label:'Brain Dump'},
+    {id:'sleep',     label:'Sleep on time'},
+  ]
+};
 
-const ALARMS = [
-  {id:'wake',    time:'07:00', label:'Wake Up — Eat Breakfast'},
-  {id:'work1',   time:'07:30', label:'Deep Work Session A'},
-  {id:'lunch',   time:'12:30', label:'Lunch Break + 20min Walk'},
-  {id:'work2',   time:'13:30', label:'Deep Work Session B'},
-  {id:'workend', time:'17:30', label:'Work Ends — Step Away'},
-  {id:'light',   time:'18:30', label:'Light Work — Planning Only'},
-  {id:'noscreen',time:'21:00', label:'No Screens — Wind Down'},
-  {id:'sleep',   time:'22:30', label:'Sleep — Non Negotiable'},
-];
+// ── STATE ─────────────────────────────────────────────────────────────────────
+function loadState() { try { return JSON.parse(localStorage.getItem('szq_os2')||'{}'); } catch { return {}; } }
+function saveState() { localStorage.setItem('szq_os2', JSON.stringify(state)); }
 
-const HABITS = [
-  {id:'breakfast', label:'Breakfast'},
-  {id:'deepwork',  label:'Deep Work'},
-  {id:'lunch',     label:'Lunch'},
-  {id:'walk',      label:'Walk'},
-  {id:'water',     label:'Water'},
-  {id:'braindump', label:'Brain Dump'},
-  {id:'sleep',     label:'Sleep 10:30'},
-];
-
-function todayKey() { const d=new Date(); return `szq-${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`; }
-function loadState() { try { return JSON.parse(localStorage.getItem('szq_os')||'{}'); } catch { return {}; } }
-function saveState() { localStorage.setItem('szq_os',JSON.stringify(state)); }
 let state = loadState();
-if (!state.streak) state.streak={days:[],lastDate:null};
-if (!state.logs)   state.logs=[];
-function todayData() { const k=todayKey(); if(!state[k]) state[k]={habits:{}}; return state[k]; }
+if (!state.profile)    state.profile    = {...DEFAULTS.profile};
+if (!state.launchDate) state.launchDate = DEFAULTS.launchDate;
+if (!state.startDate)  state.startDate  = DEFAULTS.startDate;
+if (!state.alarms)     state.alarms     = DEFAULTS.alarms.map(a=>({...a}));
+if (!state.habits)     state.habits     = DEFAULTS.habits.map(h=>({...h}));
+if (!state.streak)     state.streak     = {days:[], lastDate:null};
+if (!state.logs)       state.logs       = [];
+saveState();
 
+function todayKey() { const d=new Date(); return `day-${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`; }
+function todayData() { const k=todayKey(); if(!state[k]) state[k]={habits:{}}; return state[k]; }
 const pad = n => String(n).padStart(2,'0');
 function timeToMins(t) { const [h,m]=t.split(':').map(Number); return h*60+m; }
 function nowMins() { const n=new Date(); return n.getHours()*60+n.getMinutes(); }
 function countdown(alarm) {
   const nm=nowMins(), am=timeToMins(alarm.time);
   let diff=am-nm; if(diff<0) diff+=1440;
-  const h=Math.floor(diff/60), m=diff%60;
-  return h===0 ? `${m}m` : `${h}h ${m}m`;
+  return Math.floor(diff/60)===0 ? `${diff%60}m` : `${Math.floor(diff/60)}h ${diff%60}m`;
 }
 function addLog(msg) {
   const now=new Date();
-  state.logs.unshift({time:`${pad(now.getHours())}:${pad(now.getMinutes())}`,msg});
+  state.logs.unshift({time:`${pad(now.getHours())}:${pad(now.getMinutes())}`, msg});
   if(state.logs.length>100) state.logs.pop();
   saveState();
 }
+function uid() { return Date.now().toString(36); }
 
+// ── CLOCK ─────────────────────────────────────────────────────────────────────
 function updateClock() {
   const now=new Date();
   document.getElementById('live-clock').textContent=`${pad(now.getHours())}:${pad(now.getMinutes())}`;
   const days=['SUN','MON','TUE','WED','THU','FRI','SAT'];
   const months=['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
-  document.getElementById('live-date').textContent=`${days[now.getDay()]} ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()} // PKT`;
-  const dayNum=Math.floor((now-START_DATE)/86400000)+1;
+  document.getElementById('live-date').textContent=`${days[now.getDay()]} ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
+  const start=new Date(state.startDate);
+  const dayNum=Math.floor((now-start)/86400000)+1;
   document.getElementById('dayBadge').textContent=`DAY ${dayNum}`;
-  document.getElementById('totalDays').textContent=`${dayNum} DAYS RUNNING`;
+  document.getElementById('totalDays').textContent=`${dayNum} DAYS`;
+  document.getElementById('headerName').textContent=state.profile.name.toUpperCase();
 }
 
+// ── COUNTDOWN ─────────────────────────────────────────────────────────────────
 function updateCountdown() {
-  const diff=LAUNCH_DATE-new Date();
+  const launch=new Date(state.launchDate); launch.setHours(9,0,0,0);
+  const diff=launch-new Date();
   if(diff<=0){['cdDays','cdHours','cdMins','cdSecs'].forEach(id=>document.getElementById(id).textContent='00');return;}
   document.getElementById('cdDays').textContent=pad(Math.floor(diff/86400000));
   document.getElementById('cdHours').textContent=pad(Math.floor((diff%86400000)/3600000));
@@ -347,13 +406,17 @@ function updateCountdown() {
   document.getElementById('cdSecs').textContent=pad(Math.floor((diff%60000)/1000));
 }
 
-function getNextAlarm() { const nm=nowMins(); return ALARMS.find(a=>timeToMins(a.time)>nm)||ALARMS[0]; }
+// ── ALARMS ────────────────────────────────────────────────────────────────────
+function getNextAlarm() {
+  const nm=nowMins(), sorted=[...state.alarms].sort((a,b)=>timeToMins(a.time)-timeToMins(b.time));
+  return sorted.find(a=>timeToMins(a.time)>nm)||sorted[0];
+}
 
 function renderAlarms() {
   const nm=nowMins(), next=getNextAlarm();
   const container=document.getElementById('alarmList'); container.innerHTML='';
-  ALARMS.forEach(a=>{
-    const am=timeToMins(a.time), isPast=am<nm, isNext=a.id===next.id;
+  [...state.alarms].sort((a,b)=>timeToMins(a.time)-timeToMins(b.time)).forEach(a=>{
+    const am=timeToMins(a.time), isPast=am<nm, isNext=next&&a.id===next.id;
     const row=document.createElement('div');
     row.className=`p-2.5 px-4 flex justify-between items-center ${isNext?'alarm-row-active':isPast?'alarm-row-past':''}`;
     row.innerHTML=`
@@ -366,20 +429,21 @@ function renderAlarms() {
   });
 
   const upcoming=document.getElementById('upcomingAlarms'); upcoming.innerHTML='';
-  const future=ALARMS.filter(a=>timeToMins(a.time)>nm);
-  if(!future.length){ upcoming.innerHTML=`<div class="p-4 text-center font-code-sm opacity-40 uppercase">All alarms completed</div>`; return; }
+  const future=[...state.alarms].filter(a=>timeToMins(a.time)>nm).sort((a,b)=>timeToMins(a.time)-timeToMins(b.time));
+  if(!future.length){upcoming.innerHTML=`<div class="p-4 text-center font-code-sm opacity-40 uppercase">All alarms done for today</div>`;return;}
   future.forEach(a=>{
     const row=document.createElement('div');
-    row.className=`p-2.5 px-4 flex justify-between items-center ${a.id===next.id?'alarm-row-active':''}`;
-    row.innerHTML=`<span class="font-code-sm text-code-sm uppercase ${a.id===next.id?'text-primary-container font-bold':''}">${a.time} — ${a.label}</span><span class="font-label-xs text-[9px] text-primary-container uppercase">${countdown(a)}</span>`;
+    row.className=`p-2.5 px-4 flex justify-between items-center ${next&&a.id===next.id?'alarm-row-active':''}`;
+    row.innerHTML=`<span class="font-code-sm text-code-sm uppercase ${next&&a.id===next.id?'text-primary-container font-bold':''}">${a.time} — ${a.label}</span><span class="font-label-xs text-[9px] text-primary-container uppercase">${countdown(a)}</span>`;
     upcoming.appendChild(row);
   });
 }
 
+// ── HABITS ────────────────────────────────────────────────────────────────────
 function renderHabits() {
   const today=todayData(), container=document.getElementById('habitList'); container.innerHTML='';
   let done=0;
-  HABITS.forEach(h=>{
+  state.habits.forEach(h=>{
     const isDone=!!today.habits[h.id]; if(isDone) done++;
     const item=document.createElement('div');
     item.className=`habit-item flex items-center gap-2 ${isDone?'done':''}`;
@@ -391,24 +455,25 @@ function renderHabits() {
       <span class="font-code-sm text-[11px] uppercase habit-label">${h.label}</span>`;
     container.appendChild(item);
   });
-  const pct=Math.round((done/HABITS.length)*100);
+  const pct=state.habits.length?Math.round((done/state.habits.length)*100):0;
   document.getElementById('progressBar').style.width=`${pct}%`;
   document.getElementById('checklistPct').textContent=`CHECKLIST: ${pct}%`;
   const strip=document.getElementById('healthStrip');
   if(pct===100){strip.textContent='SYSTEM_HEALTH: OPTIMAL ✓';strip.style.background='rgba(0,255,65,0.12)';strip.style.color='#00ff41';strip.style.borderColor='rgba(0,255,65,0.3)';}
-  else if(pct>=50){strip.textContent=`SYSTEM_HEALTH: ${pct}% — KEEP PUSHING`;strip.style.background='rgba(255,219,60,0.1)';strip.style.color='#ffdb3c';strip.style.borderColor='rgba(255,219,60,0.3)';}
-  else{strip.textContent=`SYSTEM_HEALTH: ${pct}% — NEEDS ATTENTION`;strip.style.background='rgba(255,170,0,0.08)';strip.style.color='#ffaa00';strip.style.borderColor='rgba(255,170,0,0.25)';}
-  if(done===HABITS.length) markStreakDay();
+  else if(pct>=50){strip.textContent=`SYSTEM_HEALTH: ${pct}% — KEEP PUSHING`;strip.style.background='rgba(255,219,60,0.08)';strip.style.color='#ffdb3c';strip.style.borderColor='rgba(255,219,60,0.3)';}
+  else{strip.textContent=`SYSTEM_HEALTH: ${pct}% — NEEDS ATTENTION`;strip.style.background='rgba(255,170,0,0.06)';strip.style.color='#ffaa00';strip.style.borderColor='rgba(255,170,0,0.25)';}
+  if(done===state.habits.length&&state.habits.length>0) markStreakDay();
 }
 
 function toggleHabit(id) {
   const today=todayData(); today.habits[id]=!today.habits[id]; state[todayKey()]=today;
-  const h=HABITS.find(x=>x.id===id);
-  if(today.habits[id]) addLog(`COMPLETED: ${h.label.toUpperCase()}`);
+  const h=state.habits.find(x=>x.id===id);
+  if(today.habits[id]&&h) addLog(`COMPLETED: ${h.label.toUpperCase()}`);
   saveState(); renderHabits();
-  if(today.habits[id]) showToast(`✓ ${h.label.toUpperCase()}`);
+  if(today.habits[id]&&h) showToast(`✓ ${h.label.toUpperCase()}`);
 }
 
+// ── STREAK ────────────────────────────────────────────────────────────────────
 function markStreakDay() {
   const today=todayKey();
   if(state.streak.lastDate!==today){
@@ -418,7 +483,6 @@ function markStreakDay() {
   }
   renderStreak();
 }
-
 function renderStreak() {
   const count=state.streak.days.length;
   document.getElementById('streakNum').textContent=count;
@@ -427,22 +491,114 @@ function renderStreak() {
   const today=todayKey();
   for(let i=0;i<28;i++){
     const d=document.createElement('div');
-    const dayKey=state.streak.days[i];
-    d.className=`streak-dot ${dayKey?(dayKey===today?'bg-primary-container shadow-[0_0_4px_rgba(0,255,65,0.6)]':'bg-primary-container'):'bg-surface-container-highest'}`;
+    const k=state.streak.days[i];
+    d.className=`streak-dot ${k?(k===today?'bg-primary-container shadow-[0_0_4px_rgba(0,255,65,0.6)]':'bg-primary-container'):'bg-surface-container-highest'}`;
     grid.appendChild(d);
   }
 }
 
+// ── LOGS ──────────────────────────────────────────────────────────────────────
 function renderLogs() {
-  const container=document.getElementById('logList');
-  if(!state.logs.length){container.innerHTML=`<div class="p-4 text-center font-code-sm opacity-40 uppercase">No activity logged yet</div>`;return;}
-  container.innerHTML=state.logs.slice(0,50).map(l=>`
+  const c=document.getElementById('logList');
+  if(!state.logs.length){c.innerHTML=`<div class="p-4 text-center font-code-sm opacity-40 uppercase">No activity yet</div>`;return;}
+  c.innerHTML=state.logs.slice(0,50).map(l=>`
     <div class="p-2.5 px-4 flex justify-between items-center">
       <span class="font-code-sm text-[11px] text-primary-container">${l.msg}</span>
       <span class="font-label-xs text-[8px] opacity-40">${l.time}</span>
     </div>`).join('');
 }
 
+// ── SETTINGS PANEL ────────────────────────────────────────────────────────────
+function loadSettingsUI() {
+  // Profile
+  document.getElementById('s_name').value    = state.profile.name;
+  document.getElementById('s_base').value    = state.profile.base;
+  document.getElementById('s_mission').value = state.profile.mission;
+  document.getElementById('s_entity').value  = state.profile.entity;
+  document.getElementById('s_launch').value  = state.launchDate;
+  document.getElementById('s_start').value   = state.startDate;
+  renderAlarmSettings();
+  renderHabitSettings();
+}
+
+function saveProfile() {
+  state.profile.name    = document.getElementById('s_name').value.trim()||'Operator';
+  state.profile.base    = document.getElementById('s_base').value.trim()||'—';
+  state.profile.mission = document.getElementById('s_mission').value.trim()||'—';
+  state.profile.entity  = document.getElementById('s_entity').value.trim()||'—';
+  saveState(); addLog('SETTINGS: PROFILE UPDATED'); showToast('PROFILE SAVED ✓'); updateClock();
+}
+
+function saveLaunchDate() {
+  const val=document.getElementById('s_launch').value;
+  if(!val){showToast('INVALID DATE');return;}
+  state.launchDate=val; saveState(); addLog('SETTINGS: LAUNCH DATE UPDATED'); showToast('LAUNCH DATE SAVED ✓');
+}
+
+function saveStartDate() {
+  const val=document.getElementById('s_start').value;
+  if(!val){showToast('INVALID DATE');return;}
+  state.startDate=val; saveState(); addLog('SETTINGS: START DATE UPDATED'); showToast('START DATE SAVED ✓'); updateClock();
+}
+
+// ── ALARM SETTINGS ────────────────────────────────────────────────────────────
+function renderAlarmSettings() {
+  const c=document.getElementById('alarmSettings'); c.innerHTML='';
+  [...state.alarms].sort((a,b)=>timeToMins(a.time)-timeToMins(b.time)).forEach(alarm=>{
+    const row=document.createElement('div');
+    row.className='editable-row';
+    row.innerHTML=`
+      <input class="settings-input" style="width:90px;flex-shrink:0;" type="time" value="${alarm.time}" onchange="updateAlarm('${alarm.id}','time',this.value)" />
+      <input class="settings-input" style="flex:1;" type="text" value="${alarm.label}" onchange="updateAlarm('${alarm.id}','label',this.value)" />
+      <button onclick="deleteAlarm('${alarm.id}')" class="settings-btn btn-danger flex-shrink-0">✕</button>`;
+    c.appendChild(row);
+  });
+}
+
+function updateAlarm(id, field, val) {
+  const a=state.alarms.find(x=>x.id===id); if(!a) return;
+  a[field]=val; saveState(); renderAlarms();
+}
+
+function addAlarm() {
+  state.alarms.push({id:uid(), time:'08:00', label:'New Alarm'});
+  saveState(); renderAlarmSettings(); renderAlarms(); showToast('ALARM ADDED');
+}
+
+function deleteAlarm(id) {
+  state.alarms=state.alarms.filter(a=>a.id!==id);
+  saveState(); renderAlarmSettings(); renderAlarms(); showToast('ALARM DELETED');
+}
+
+// ── HABIT SETTINGS ────────────────────────────────────────────────────────────
+function renderHabitSettings() {
+  const c=document.getElementById('habitSettings'); c.innerHTML='';
+  state.habits.forEach(habit=>{
+    const row=document.createElement('div');
+    row.className='editable-row';
+    row.innerHTML=`
+      <input class="settings-input" style="flex:1;" type="text" value="${habit.label}" onchange="updateHabit('${habit.id}','label',this.value)" />
+      <button onclick="deleteHabit('${habit.id}')" class="settings-btn btn-danger flex-shrink-0">✕</button>`;
+    c.appendChild(row);
+  });
+}
+
+function updateHabit(id, field, val) {
+  const h=state.habits.find(x=>x.id===id); if(!h) return;
+  h[field]=val; saveState(); renderHabits();
+}
+
+function addHabit() {
+  state.habits.push({id:uid(), label:'New Habit'});
+  saveState(); renderHabitSettings(); renderHabits(); showToast('HABIT ADDED');
+}
+
+function deleteHabit(id) {
+  state.habits=state.habits.filter(h=>h.id!==id);
+  saveState(); renderHabitSettings(); renderHabits(); showToast('HABIT DELETED');
+}
+
+// ── NOTIFICATIONS ─────────────────────────────────────────────────────────────
 function updateNotifUI() {
   const banner=document.getElementById('notif-banner'), icon=document.getElementById('notifIcon'), status=document.getElementById('notifStatus');
   if(!('Notification' in window)){banner.classList.add('hidden');status.textContent='NOT SUPPORTED';return;}
@@ -450,56 +606,60 @@ function updateNotifUI() {
     banner.classList.add('hidden'); icon.textContent='notifications_active'; icon.style.color='#00ff41'; status.textContent='GRANTED ✓'; scheduleNotifications();
   } else { banner.classList.remove('hidden'); status.textContent='PERMISSION NEEDED'; }
 }
-
 async function requestNotifPermission() {
   if(!('Notification' in window)){showToast('NOT SUPPORTED');return;}
-  if(Notification.permission==='granted'){showToast('NOTIFICATIONS ALREADY ACTIVE');return;}
-  const perm=await Notification.requestPermission();
-  if(perm==='granted'){updateNotifUI();showToast('NOTIFICATIONS ENABLED ✓');addLog('NOTIFICATIONS: ENABLED');}
-  else{showToast('PERMISSION DENIED — CHECK BROWSER SETTINGS');}
+  if(Notification.permission==='granted'){showToast('ALREADY ACTIVE');return;}
+  const p=await Notification.requestPermission();
+  if(p==='granted'){updateNotifUI();showToast('ENABLED ✓');addLog('NOTIFICATIONS: ENABLED');}
+  else showToast('DENIED — CHECK BROWSER SETTINGS');
 }
-
-let scheduledAlarmTimers={};
+let alarmTimers={};
 function scheduleNotifications() {
   if(Notification.permission!=='granted') return;
-  Object.values(scheduledAlarmTimers).forEach(clearTimeout); scheduledAlarmTimers={};
+  Object.values(alarmTimers).forEach(clearTimeout); alarmTimers={};
   const now=new Date();
-  ALARMS.forEach(alarm=>{
+  state.alarms.forEach(alarm=>{
     const [h,m]=alarm.time.split(':').map(Number), target=new Date();
     target.setHours(h,m,0,0); if(target<=now) target.setDate(target.getDate()+1);
-    scheduledAlarmTimers[alarm.id]=setTimeout(()=>{
-      new Notification(`⏰ ${alarm.time} — SHAHROZ`,{body:alarm.label,tag:alarm.id,renotify:true,vibrate:[200,100,200]});
+    alarmTimers[alarm.id]=setTimeout(()=>{
+      new Notification(`⏰ ${alarm.time}`,{body:alarm.label,tag:alarm.id,renotify:true,vibrate:[200,100,200]});
     }, target-now);
   });
 }
 
+// ── ALARM FIRE CHECK ──────────────────────────────────────────────────────────
 let lastFiredMin=-1;
 function checkAlarmFire() {
   const nm=nowMins(); if(nm===lastFiredMin) return;
-  ALARMS.forEach(a=>{
+  state.alarms.forEach(a=>{
     if(timeToMins(a.time)===nm){
-      lastFiredMin=nm; showToast(`🔔 ${a.time} — ${a.label.toUpperCase()}`);
-      addLog(`ALARM_FIRED: ${a.time} ${a.label.toUpperCase()}`);
-      if(Notification.permission==='granted') new Notification(`⏰ ${a.time} — SHAHROZ`,{body:a.label,tag:a.id,renotify:true});
+      lastFiredMin=nm; showToast(`🔔 ${a.time} — ${a.label}`);
+      addLog(`ALARM: ${a.time} ${a.label.toUpperCase()}`);
+      if(Notification.permission==='granted') new Notification(`⏰ ${a.time}`,{body:a.label,tag:a.id,renotify:true});
     }
   });
 }
 
+// ── TABS ──────────────────────────────────────────────────────────────────────
 function switchTab(tab) {
   ['dash','logs','alerts','system'].forEach(t=>{
     document.getElementById(`view-${t}`).classList.toggle('active',t===tab);
     document.getElementById(`tab-${t}`).classList.toggle('active',t===tab);
   });
   if(tab==='logs') renderLogs();
+  if(tab==='system') loadSettingsUI();
 }
 
-function resetDay() { state[todayKey()]={habits:{}}; addLog('MANUAL_RESET: TODAY CLEARED'); saveState(); renderHabits(); showToast('TODAY RESET'); }
+// ── RESET ─────────────────────────────────────────────────────────────────────
+function resetDay() { state[todayKey()]={habits:{}}; addLog('RESET: TODAY CLEARED'); saveState(); renderHabits(); showToast('TODAY RESET'); }
 function resetAll() {
-  if(!confirm('FACTORY RESET — delete all data?')) return;
-  localStorage.removeItem('szq_os'); state={streak:{days:[],lastDate:null},logs:[]}; saveState();
-  renderHabits(); renderStreak(); renderLogs(); showToast('FACTORY RESET COMPLETE');
+  if(!confirm('FACTORY RESET — delete everything?')) return;
+  localStorage.removeItem('szq_os2');
+  state={profile:{...DEFAULTS.profile},launchDate:DEFAULTS.launchDate,startDate:DEFAULTS.startDate,alarms:DEFAULTS.alarms.map(a=>({...a})),habits:DEFAULTS.habits.map(h=>({...h})),streak:{days:[],lastDate:null},logs:[]};
+  saveState(); renderHabits(); renderStreak(); renderLogs(); loadSettingsUI(); showToast('FACTORY RESET DONE');
 }
 
+// ── TOAST ─────────────────────────────────────────────────────────────────────
 let toastTimer;
 function showToast(msg) {
   const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show');
@@ -508,9 +668,10 @@ function showToast(msg) {
 
 if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(()=>{});
 
+// ── INIT ──────────────────────────────────────────────────────────────────────
 function init() {
   updateClock(); updateCountdown(); renderAlarms(); renderHabits(); renderStreak(); updateNotifUI();
-  addLog('SESSION_START: LAUNCHPAD OS LOADED');
+  addLog('SESSION: LAUNCHPAD OS LOADED');
   document.querySelectorAll('section').forEach((s,i)=>{
     s.style.opacity='0'; s.style.transform='translateY(8px)';
     s.style.transition=`all 0.35s cubic-bezier(0.16,1,0.3,1) ${i*0.04}s`;
